@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const projectRoot = new URL("../", import.meta.url);
@@ -50,4 +50,14 @@ test("ships the required public visual assets", async () => {
     access(new URL("public/evolution-diff.jpg", projectRoot)),
     access(new URL("public/nanoevo-icon.png", projectRoot)),
   ]);
+});
+
+test("exports a self-contained GitHub Pages entrypoint", async () => {
+  const html = await readFile(new URL("pages-dist/index.html", projectRoot), "utf8");
+
+  assert.match(html, /让 Skills 从真实工作中学习/);
+  assert.match(html, /\/nanobot-evo\/assets\//);
+  assert.match(html, /\/nanobot-evo\/evolution-diff\.jpg/);
+  assert.match(html, /https:\/\/lovits\.github\.io\/nanobot-evo\/og\.png/);
+  assert.doesNotMatch(html, /\/_vinext\/image|<script\b|\/nanobot-evo\/nanobot-evo\//i);
 });
