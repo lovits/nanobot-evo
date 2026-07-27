@@ -54,6 +54,10 @@ html = html
     /(href|src)="\/(?!\/|nanobot-evo(?:\/|"))([^"]*)"/g,
     (_, attribute, path) => `${attribute}="${basePath}/${path}"`,
   )
+  .replace(
+    /(?<!\/nanobot-evo)\/assets\/_vinext_fonts/g,
+    `${basePath}/assets/_vinext_fonts`,
+  )
   .replace(/<link rel="modulepreload"[^>]*\/>/g, "")
   .replace(/<script[^>]*>[\s\S]*?<\/script>/g, "");
 

@@ -60,4 +60,5 @@ test("exports a self-contained GitHub Pages entrypoint", async () => {
   assert.match(html, /\/nanobot-evo\/evolution-diff\.jpg/);
   assert.match(html, /https:\/\/lovits\.github\.io\/nanobot-evo\/og\.png/);
   assert.doesNotMatch(html, /\/_vinext\/image|<script\b|\/nanobot-evo\/nanobot-evo\//i);
+  assert.doesNotMatch(html, /(?<!\/nanobot-evo)\/assets\/_vinext_fonts/);
 });
