@@ -11,6 +11,7 @@ export default function Home() {
         <div className="nav-links">
           <a href="#how">工作原理</a>
           <a href="#proof">产品界面</a>
+          <a href="/webui/">WebUI 演示</a>
           <a href="#safety">安全边界</a>
         </div>
         <a
@@ -164,6 +165,12 @@ export default function Home() {
           <div><span>01</span><p><b>Evidence first</b>先看导致提案的真实轨迹，再决定是否接受。</p></div>
           <div><span>02</span><p><b>Diff before trust</b>精确查看 SKILL.md 每一处增删，不接受黑盒更新。</p></div>
           <div><span>03</span><p><b>Versioned control</b>比较历史版本、切换或恢复，所有改变都有来路。</p></div>
+        </div>
+        <div className="product-demo-action">
+          <a className="button button-primary" href="/webui/">
+            打开完整 WebUI 展示界面 <span aria-hidden="true">↗</span>
+          </a>
+          <span>只读演示 · 不连接本地 Agent 或私有数据</span>
         </div>
       </section>
 

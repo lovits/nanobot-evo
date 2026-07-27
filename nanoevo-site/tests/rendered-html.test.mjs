@@ -62,3 +62,15 @@ test("exports a self-contained GitHub Pages entrypoint", async () => {
   assert.doesNotMatch(html, /\/_vinext\/image|<script\b|\/nanobot-evo\/nanobot-evo\//i);
   assert.doesNotMatch(html, /(?<!\/nanobot-evo)\/assets\/_vinext_fonts/);
 });
+
+test("exports the read-only WebUI demonstration route", async () => {
+  const html = await readFile(new URL("pages-dist/webui/index.html", projectRoot), "utf8");
+
+  assert.match(html, /NanoEvo WebUI Demo/);
+  assert.match(html, /Skill evolution management/);
+  assert.match(html, /chinese-writing-polish/);
+  assert.match(html, /Approve and apply/);
+  assert.match(html, /只读展示/);
+  assert.match(html, /\/nanobot-evo\/assets\//);
+  assert.doesNotMatch(html, /<script\b|\/nanobot-evo\/nanobot-evo\//i);
+});
