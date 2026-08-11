@@ -7,6 +7,10 @@ import type {
   ChannelValidationPayload,
   ChatSummary,
   CliAppsPayload,
+  EvolutionActionResult,
+  EvolutionOverview,
+  EvolutionSkillDetail,
+  EvolutionVersionDiff,
   FilePreviewPayload,
   ImageGenerationSettingsUpdate,
   McpPresetsPayload,
@@ -54,6 +58,7 @@ function isSlashCommandLifecycle(value: unknown): value is SlashCommandLifecycle
 const CHANNEL_VALUES_HEADER = "X-Nanobot-Channel-Values";
 const API_SERVICE_VALUES_HEADER = "X-Nanobot-API-Service-Values";
 const OAUTH_CODE_HEADER = "X-Nanobot-OAuth-Code";
+const EVOLUTION_VALUES_HEADER = "X-Nanobot-Evolution-Values";
 
 export class ApiError extends Error {
   status: number;
@@ -117,6 +122,10 @@ function mcpValuesHeader(values: Record<string, unknown>): HeadersInit | undefin
 
 function automationValuesHeader(values: AutomationUpdatePayload): HeadersInit {
   return { "X-Nanobot-Automation-Values": encodeURIComponent(JSON.stringify(values)) };
+}
+
+function evolutionValuesHeader(values: Record<string, unknown>): HeadersInit {
+  return { [EVOLUTION_VALUES_HEADER]: encodeURIComponent(JSON.stringify(values)) };
 }
 
 function splitKey(key: string): { channel: string; chatId: string } {
@@ -303,6 +312,123 @@ export async function fetchSkillDetail(
     `${base}/api/webui/skills/${encodeURIComponent(name)}`,
     token,
     undefined,
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function fetchEvolutionOverview(
+  token: string,
+  base: string = "",
+): Promise<EvolutionOverview> {
+  return request<EvolutionOverview>(
+    `${base}/api/webui/evolution`,
+    token,
+    undefined,
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function fetchEvolutionSkillDetail(
+  token: string,
+  name: string,
+  base: string = "",
+): Promise<EvolutionSkillDetail> {
+  return request<EvolutionSkillDetail>(
+    `${base}/api/webui/evolution/skills/${encodeURIComponent(name)}`,
+    token,
+    undefined,
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function updateEvolutionConfig(
+  token: string,
+  values: {
+    enabled: boolean;
+    review_every_n_trajectories: number;
+    review_model_preset: string | null;
+  },
+  base: string = "",
+): Promise<EvolutionActionResult> {
+  return request<EvolutionActionResult>(
+    `${base}/api/webui/evolution/config/update`,
+    token,
+    { headers: evolutionValuesHeader(values) },
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function requestEvolutionReview(
+  token: string,
+  name: string,
+  feedback: string,
+  base: string = "",
+): Promise<EvolutionActionResult> {
+  return request<EvolutionActionResult>(
+    `${base}/api/webui/evolution/skills/${encodeURIComponent(name)}/review`,
+    token,
+    { headers: evolutionValuesHeader({ feedback }) },
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function decideEvolutionProposal(
+  token: string,
+  proposalId: string,
+  action: "approve" | "reject",
+  base: string = "",
+): Promise<EvolutionActionResult> {
+  return request<EvolutionActionResult>(
+    `${base}/api/webui/evolution/proposals/${encodeURIComponent(proposalId)}/${action}`,
+    token,
+    undefined,
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function restoreEvolutionSkill(
+  token: string,
+  name: string,
+  base: string = "",
+): Promise<EvolutionActionResult> {
+  return request<EvolutionActionResult>(
+    `${base}/api/webui/evolution/skills/${encodeURIComponent(name)}/restore`,
+    token,
+    undefined,
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function compareEvolutionVersions(
+  token: string,
+  name: string,
+  baseHash: string,
+  targetHash: string,
+  base: string = "",
+): Promise<EvolutionVersionDiff> {
+  return request<EvolutionVersionDiff>(
+    `${base}/api/webui/evolution/skills/${encodeURIComponent(name)}/versions/compare`,
+    token,
+    {
+      headers: evolutionValuesHeader({
+        base_hash: baseHash,
+        target_hash: targetHash,
+      }),
+    },
+    API_READ_TIMEOUT_MS,
+  );
+}
+
+export async function switchEvolutionVersion(
+  token: string,
+  name: string,
+  contentHash: string,
+  base: string = "",
+): Promise<EvolutionActionResult> {
+  return request<EvolutionActionResult>(
+    `${base}/api/webui/evolution/skills/${encodeURIComponent(name)}/versions/switch`,
+    token,
+    { headers: evolutionValuesHeader({ content_hash: contentHash }) },
     API_READ_TIMEOUT_MS,
   );
 }

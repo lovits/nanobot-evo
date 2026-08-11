@@ -757,7 +757,179 @@
       "unavailableReasonLabel": "Motivo da indisponibilidade",
       "rawInstructions": "SKILL.md bruto",
       "rawInstructionsEmpty": "Sem instruções brutas.",
-      "detailDescription": "Detalhes de {{name}}."
+      "detailDescription": "Detalhes de {{name}}.",
+      "evolution": {
+        "open": "Gerenciar evolução",
+        "title": "Gerenciamento da evolução de Skills",
+        "description": "Melhore Workspace Skills existentes com evidências de execução anonimizadas.",
+        "loading": "Carregando NanoEvo…",
+        "backToSkills": "Voltar para Skills",
+        "summary": {
+          "evolvable": "Evoluíveis",
+          "protected": "Protegidas",
+          "pending": "Pendentes"
+        },
+        "regions": {
+          "list": "Lista de evolução de Skills",
+          "details": "Detalhes da evolução da Skill selecionada"
+        },
+        "runtime": {
+          "title": "Runtime de evolução",
+          "configEnabled": "Configuração ativada",
+          "configDisabled": "Configuração desativada",
+          "runtimeActive": "Runtime ativo",
+          "runtimeInactive": "Runtime inativo",
+          "restartRequired": "Reinicialização necessária",
+          "enableAria": "Ativar a evolução de Skills na configuração",
+          "reviewInterval": "Estratégia de revisão automática",
+          "reviewIntervalOption": "Revisar a cada {{count}} usos",
+          "modelPreset": "Predefinição do modelo de revisão",
+          "currentMainModel": "Usar o modelo principal atual",
+          "save": "Salvar configuração",
+          "help": "As alterações são salvas imediatamente. Reinicie o Gateway para instalar ou remover os hooks do runtime NanoEvo."
+        },
+        "filters": {
+          "all": "Todas",
+          "evolvable": "Evoluíveis",
+          "pending": "Pendentes",
+          "aria": "Filtrar Skills de evolução",
+          "noMatch": "Nenhuma Skill corresponde a este filtro."
+        },
+        "skillStates": {
+          "protected": "Embutida · protegida",
+          "reviewing": "Revisando evidências",
+          "proposalPending": "{{count}} proposta pendente",
+          "conflict": "Conflito na proposta",
+          "updated": "Skill atualizada",
+          "unavailable": "Indisponível no momento",
+          "collecting": "Coletando {{count}}/{{threshold}}"
+        },
+        "panel": {
+          "loading": "Carregando detalhes da evolução da Skill…",
+          "select": "Selecione uma Skill para inspecionar seu estado de evolução."
+        },
+        "tabs": {
+          "overview": "Visão geral",
+          "proposal": "Proposta",
+          "proposalCount": "Proposta {{count}}",
+          "versions": "Versões",
+          "versionsCount": "Versões {{count}}",
+          "aria": "Seções da evolução de Skills"
+        },
+        "states": {
+          "protected": "Protegida",
+          "collecting": "Coletando",
+          "reviewing": "Revisando",
+          "proposal_pending": "Aguardando revisão",
+          "updated": "Atualizada",
+          "conflict": "Conflito",
+          "unavailable": "Indisponível"
+        },
+        "protected": {
+          "title": "Skill embutida protegida",
+          "description": "O NanoEvo V1 melhora apenas Workspace Skills existentes. Skills embutidas permanecem somente leitura."
+        },
+        "progress": {
+          "title": "Progresso da revisão automática",
+          "remaining": "Mais {{count}} trajetórias atribuídas antes da revisão periódica",
+          "ready": "Limite da revisão periódica atingido",
+          "aria": "Progresso da revisão automática"
+        },
+        "review": {
+          "title": "Solicitar uma revisão",
+          "help": "O feedback opcional pode orientar o revisor, mas não ignora a política nem a aprovação.",
+          "placeholder": "Descreva um problema concreto da Skill para verificar…",
+          "runtimeRequired": "Ative o NanoEvo e reinicie o Gateway primeiro.",
+          "evidenceRequired": "É necessária pelo menos uma trajetória persistida.",
+          "alreadyRunning": "Uma revisão já está em andamento.",
+          "available": "{{count}} registro(s) de evidência recente disponíveis.",
+          "feedbackAvailable": "O feedback será verificado com {{count}} registro(s) de evidência recente.",
+          "thresholdAvailable": "O limite periódico foi atingido; a revisão pode ser solicitada agora.",
+          "thresholdRequired": "Faltam {{count}} trajetória(s) atribuída(s), ou adicione um feedback concreto para antecipar a revisão.",
+          "request": "Solicitar revisão"
+        },
+        "result": {
+          "title": "Última revisão",
+          "noChange": "Nenhuma modificação gerada",
+          "failed": "Falha na revisão",
+          "timedOut": "Tempo limite da revisão excedido",
+          "proposal": "Proposta de alteração criada",
+          "running": "Revisão em andamento",
+          "noChangeReason": "As evidências disponíveis não confirmaram um defeito reutilizável na Skill.",
+          "failedReason": "O revisor não conseguiu concluir a revisão.",
+          "timedOutReason": "O revisor não terminou dentro do limite de tempo."
+        },
+        "evidence": {
+          "independentTurns": "Turnos independentes",
+          "independentProjects": "Projetos independentes",
+          "notRequired": "Não obrigatório",
+          "recent": "Evidências recentes anonimizadas",
+          "objectiveFailure": "Falha objetiva",
+          "completed": "Concluído",
+          "metadata": "{{tools}} chamadas de ferramenta · {{errors}} erros · {{date}}",
+          "empty": "Nenhuma trajetória atribuída foi salva para esta Skill."
+        },
+        "proposal": {
+          "noneTitle": "Nenhuma proposta pendente",
+          "noneDescription": "Uma revisão pode concluir sem alterações. Somente patches locais apoiados por evidências aparecem aqui.",
+          "why": "Motivo da alteração",
+          "gates": "Critérios de evidência",
+          "localReplacement": "Substituição local de texto",
+          "before": "Antes",
+          "after": "Depois",
+          "rejectTitle": "Rejeitar esta proposta?",
+          "rejectDescription": "A proposta será marcada como rejeitada e a Workspace Skill permanecerá inalterada.",
+          "rejectAction": "Rejeitar proposta",
+          "reject": "Rejeitar",
+          "approveTitle": "Aprovar e aplicar esta alteração da Skill?",
+          "approveDescription": "O NanoEvo validará novamente as evidências e o hash base, fará backup do SKILL.md atual e aplicará esta substituição local.",
+          "approveAction": "Aprovar e aplicar"
+        },
+        "versions": {
+          "current": "Versão atual {{version}}",
+          "unknown": "desconhecida",
+          "description": "O NanoEvo mantém as versões para comparar quaisquer duas e alternar com segurança.",
+          "currentLabel": "Atual",
+          "compareTitle": "Diferença entre versões",
+          "baseVersion": "Comparar de",
+          "targetVersion": "Comparar com",
+          "compareAction": "Comparar versões",
+          "noDiff": "Estas versões são idênticas.",
+          "empty": "Ainda não existe backup de versão. Um backup é criado antes de aplicar um patch aprovado.",
+          "switchTitle": "Alternar para esta versão da Skill?",
+          "switchDescription": "O NanoEvo fará backup do conteúdo atual antes de alternar para a versão selecionada.",
+          "switchAction": "Alternar versão"
+        },
+        "gates": {
+          "turns": "{{current}} / {{required}} turnos independentes",
+          "projects": "{{current}} / {{required}} projetos independentes",
+          "projectsNotRequired": "Independência de projeto não é exigida para estas trajetórias",
+          "feedbackException": "A exceção de feedback explícito do usuário foi registrada",
+          "policySatisfied": "A política determinística de evidências foi atendida"
+        },
+        "dialogs": {
+          "cancel": "Cancelar"
+        },
+        "messages": {
+          "configSaved": "Configuração de evolução salva. Reinicie o Gateway quando indicado.",
+          "reviewRequested": "Revisão solicitada. As evidências continuarão sendo atualizadas neste painel.",
+          "proposalApplied": "Proposta aplicada após validação e backup.",
+          "proposalRejected": "Proposta rejeitada. A Skill não foi alterada.",
+          "versionRestored": "A versão anterior da Skill foi restaurada.",
+          "versionSwitched": "A versão da Skill foi alternada e o conteúdo anterior foi salvo."
+        },
+        "errors": {
+          "requestFailed": "Falha na solicitação de evolução.",
+          "unauthorized": "Você não tem autorização para gerenciar a evolução de Skills.",
+          "evolution_unavailable": "O NanoEvo não está ativo. Salve a configuração e reinicie o Gateway.",
+          "evolution_policy_violation": "Esta ação foi bloqueada pela política de evolução de Skills.",
+          "evolution_state_conflict": "O estado de evolução da Skill mudou. Atualize e tente novamente.",
+          "evolution_not_found": "O registro de evolução de Skill solicitado não foi encontrado.",
+          "invalid_evolution_values": "A solicitação de evolução contém valores inválidos.",
+          "evolution_base_hash_conflict": "O SKILL.md mudou após a criação da proposta. O arquivo não foi sobrescrito.",
+          "evolution_route_not_found": "O endpoint de evolução de Skill solicitado não foi encontrado."
+        }
+      }
     },
     "voice": {
       "selectProvider": "Selecionar provedor",

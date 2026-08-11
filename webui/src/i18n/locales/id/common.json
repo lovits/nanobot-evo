@@ -743,7 +743,179 @@
       "unavailableReasonLabel": "Alasan tidak tersedia",
       "rawInstructions": "SKILL.md mentah",
       "rawInstructionsEmpty": "Tidak ada instruksi mentah.",
-      "detailDescription": "Detail untuk {{name}}."
+      "detailDescription": "Detail untuk {{name}}.",
+      "evolution": {
+        "open": "Kelola evolusi",
+        "title": "Manajemen evolusi Skill",
+        "description": "Tingkatkan Workspace Skill yang ada dari bukti eksekusi yang telah disamarkan.",
+        "loading": "Memuat NanoEvo…",
+        "backToSkills": "Kembali ke Skill",
+        "summary": {
+          "evolvable": "Dapat berevolusi",
+          "protected": "Dilindungi",
+          "pending": "Tertunda"
+        },
+        "regions": {
+          "list": "Daftar evolusi Skill",
+          "details": "Detail evolusi Skill yang dipilih"
+        },
+        "runtime": {
+          "title": "Runtime evolusi",
+          "configEnabled": "Konfigurasi aktif",
+          "configDisabled": "Konfigurasi nonaktif",
+          "runtimeActive": "Runtime aktif",
+          "runtimeInactive": "Runtime nonaktif",
+          "restartRequired": "Perlu mulai ulang",
+          "enableAria": "Aktifkan evolusi Skill dalam konfigurasi",
+          "reviewInterval": "Strategi tinjauan otomatis",
+          "reviewIntervalOption": "Tinjau setiap {{count}} penggunaan",
+          "modelPreset": "Preset model peninjau",
+          "currentMainModel": "Gunakan model utama saat ini",
+          "save": "Simpan konfigurasi",
+          "help": "Perubahan konfigurasi langsung disimpan. Mulai ulang Gateway untuk memasang atau menghapus hook runtime NanoEvo."
+        },
+        "filters": {
+          "all": "Semua",
+          "evolvable": "Dapat berevolusi",
+          "pending": "Tertunda",
+          "aria": "Filter Skill evolusi",
+          "noMatch": "Tidak ada Skill yang cocok dengan filter ini."
+        },
+        "skillStates": {
+          "protected": "Bawaan · dilindungi",
+          "reviewing": "Meninjau bukti",
+          "proposalPending": "{{count}} proposal tertunda",
+          "conflict": "Konflik proposal",
+          "updated": "Skill diperbarui",
+          "unavailable": "Saat ini tidak tersedia",
+          "collecting": "Mengumpulkan {{count}}/{{threshold}}"
+        },
+        "panel": {
+          "loading": "Memuat detail evolusi Skill…",
+          "select": "Pilih Skill untuk memeriksa status evolusinya."
+        },
+        "tabs": {
+          "overview": "Ikhtisar",
+          "proposal": "Proposal",
+          "proposalCount": "Proposal {{count}}",
+          "versions": "Versi",
+          "versionsCount": "Versi {{count}}",
+          "aria": "Bagian evolusi Skill"
+        },
+        "states": {
+          "protected": "Dilindungi",
+          "collecting": "Mengumpulkan",
+          "reviewing": "Meninjau",
+          "proposal_pending": "Menunggu tinjauan",
+          "updated": "Diperbarui",
+          "conflict": "Konflik",
+          "unavailable": "Tidak tersedia"
+        },
+        "protected": {
+          "title": "Skill bawaan yang dilindungi",
+          "description": "NanoEvo V1 hanya meningkatkan Workspace Skill yang ada. Skill bawaan tetap hanya dapat dibaca."
+        },
+        "progress": {
+          "title": "Progres tinjauan otomatis",
+          "remaining": "{{count}} trajektori terkait lagi sebelum tinjauan berkala",
+          "ready": "Ambang tinjauan berkala tercapai",
+          "aria": "Progres tinjauan otomatis"
+        },
+        "review": {
+          "title": "Minta tinjauan",
+          "help": "Umpan balik opsional dapat memfokuskan peninjau, tetapi tidak dapat melewati kebijakan atau persetujuan.",
+          "placeholder": "Jelaskan satu masalah Skill konkret untuk diverifikasi…",
+          "runtimeRequired": "Aktifkan NanoEvo dan mulai ulang Gateway terlebih dahulu.",
+          "evidenceRequired": "Diperlukan setidaknya satu trajektori tersimpan.",
+          "alreadyRunning": "Tinjauan sedang berjalan.",
+          "available": "{{count}} catatan bukti terbaru tersedia.",
+          "feedbackAvailable": "Umpan balik akan diperiksa terhadap {{count}} catatan bukti terbaru.",
+          "thresholdAvailable": "Ambang berkala telah tercapai; tinjauan dapat diminta sekarang.",
+          "thresholdRequired": "Diperlukan {{count}} trajektori terkait lagi, atau tambahkan umpan balik konkret untuk tinjauan lebih awal.",
+          "request": "Minta tinjauan"
+        },
+        "result": {
+          "title": "Tinjauan terbaru",
+          "noChange": "Tidak ada perubahan yang dihasilkan",
+          "failed": "Tinjauan gagal",
+          "timedOut": "Waktu tinjauan habis",
+          "proposal": "Proposal perubahan dibuat",
+          "running": "Tinjauan sedang berlangsung",
+          "noChangeReason": "Bukti yang tersedia tidak memverifikasi cacat Skill yang dapat digunakan kembali.",
+          "failedReason": "Peninjau tidak dapat menyelesaikan tinjauan.",
+          "timedOutReason": "Peninjau tidak selesai dalam batas waktu."
+        },
+        "evidence": {
+          "independentTurns": "Giliran independen",
+          "independentProjects": "Proyek independen",
+          "notRequired": "Tidak diwajibkan",
+          "recent": "Bukti terbaru yang disamarkan",
+          "objectiveFailure": "Kegagalan objektif",
+          "completed": "Selesai",
+          "metadata": "{{tools}} pemanggilan alat · {{errors}} kesalahan · {{date}}",
+          "empty": "Belum ada trajektori terkait yang disimpan untuk Skill ini."
+        },
+        "proposal": {
+          "noneTitle": "Tidak ada proposal tertunda",
+          "noneDescription": "Tinjauan dapat berakhir tanpa perubahan. Hanya patch lokal berbasis bukti yang ditampilkan di sini.",
+          "why": "Alasan perubahan",
+          "gates": "Syarat bukti",
+          "localReplacement": "Penggantian teks lokal",
+          "before": "Sebelum",
+          "after": "Sesudah",
+          "rejectTitle": "Tolak proposal ini?",
+          "rejectDescription": "Proposal akan ditandai ditolak dan Workspace Skill tetap tidak berubah.",
+          "rejectAction": "Tolak proposal",
+          "reject": "Tolak",
+          "approveTitle": "Setujui dan terapkan perubahan Skill ini?",
+          "approveDescription": "NanoEvo akan memvalidasi ulang bukti dan hash dasar, mencadangkan SKILL.md saat ini, lalu menerapkan satu penggantian lokal ini.",
+          "approveAction": "Setujui dan terapkan"
+        },
+        "versions": {
+          "current": "Versi saat ini {{version}}",
+          "unknown": "tidak diketahui",
+          "description": "NanoEvo menyimpan versi agar dua versi dapat dibandingkan dan dialihkan dengan aman.",
+          "currentLabel": "Saat ini",
+          "compareTitle": "Perbedaan versi",
+          "baseVersion": "Bandingkan dari",
+          "targetVersion": "Bandingkan ke",
+          "compareAction": "Bandingkan versi",
+          "noDiff": "Kedua versi ini identik.",
+          "empty": "Belum ada cadangan versi. Cadangan dibuat sebelum patch yang disetujui diterapkan.",
+          "switchTitle": "Beralih ke versi Skill ini?",
+          "switchDescription": "NanoEvo akan mencadangkan konten saat ini sebelum beralih ke versi yang dipilih.",
+          "switchAction": "Alihkan versi"
+        },
+        "gates": {
+          "turns": "{{current}} / {{required}} giliran independen",
+          "projects": "{{current}} / {{required}} proyek independen",
+          "projectsNotRequired": "Independensi proyek tidak diwajibkan untuk jejak ini",
+          "feedbackException": "Pengecualian umpan balik eksplisit pengguna dicatat",
+          "policySatisfied": "Kebijakan bukti deterministik terpenuhi"
+        },
+        "dialogs": {
+          "cancel": "Batal"
+        },
+        "messages": {
+          "configSaved": "Konfigurasi evolusi disimpan. Mulai ulang Gateway saat diminta.",
+          "reviewRequested": "Tinjauan diminta. Bukti akan terus diperbarui di panel ini.",
+          "proposalApplied": "Proposal diterapkan setelah validasi dan pencadangan.",
+          "proposalRejected": "Proposal ditolak. Skill tidak diubah.",
+          "versionRestored": "Versi Skill sebelumnya telah dipulihkan.",
+          "versionSwitched": "Versi Skill dialihkan dan konten sebelumnya telah dicadangkan."
+        },
+        "errors": {
+          "requestFailed": "Permintaan evolusi gagal.",
+          "unauthorized": "Anda tidak berwenang mengelola evolusi Skill.",
+          "evolution_unavailable": "NanoEvo tidak aktif. Simpan konfigurasi dan mulai ulang Gateway.",
+          "evolution_policy_violation": "Tindakan ini diblokir oleh kebijakan evolusi Skill.",
+          "evolution_state_conflict": "Status evolusi Skill berubah. Muat ulang dan coba lagi.",
+          "evolution_not_found": "Catatan evolusi Skill yang diminta tidak ditemukan.",
+          "invalid_evolution_values": "Permintaan evolusi berisi nilai yang tidak valid.",
+          "evolution_base_hash_conflict": "SKILL.md berubah setelah proposal dibuat. Berkas tidak ditimpa.",
+          "evolution_route_not_found": "Endpoint evolusi Skill yang diminta tidak ditemukan."
+        }
+      }
     },
     "voice": {
       "selectProvider": "Pilih penyedia",

@@ -743,7 +743,179 @@
       "unavailableReasonLabel": "Lý do không khả dụng",
       "rawInstructions": "SKILL.md gốc",
       "rawInstructionsEmpty": "Không có hướng dẫn gốc.",
-      "detailDescription": "Chi tiết cho {{name}}."
+      "detailDescription": "Chi tiết cho {{name}}.",
+      "evolution": {
+        "open": "Quản lý tiến hóa",
+        "title": "Quản lý tiến hóa Skill",
+        "description": "Cải thiện Workspace Skill hiện có từ bằng chứng thực thi đã được khử định danh.",
+        "loading": "Đang tải NanoEvo…",
+        "backToSkills": "Quay lại Skills",
+        "summary": {
+          "evolvable": "Có thể tiến hóa",
+          "protected": "Được bảo vệ",
+          "pending": "Đang chờ"
+        },
+        "regions": {
+          "list": "Danh sách tiến hóa Skill",
+          "details": "Chi tiết tiến hóa của Skill đã chọn"
+        },
+        "runtime": {
+          "title": "Runtime tiến hóa",
+          "configEnabled": "Cấu hình đã bật",
+          "configDisabled": "Cấu hình đã tắt",
+          "runtimeActive": "Runtime đang hoạt động",
+          "runtimeInactive": "Runtime chưa hoạt động",
+          "restartRequired": "Cần khởi động lại",
+          "enableAria": "Bật tiến hóa Skill trong cấu hình",
+          "reviewInterval": "Chiến lược đánh giá tự động",
+          "reviewIntervalOption": "Đánh giá sau mỗi {{count}} lần sử dụng",
+          "modelPreset": "Cấu hình sẵn mô hình đánh giá",
+          "currentMainModel": "Dùng mô hình chính hiện tại",
+          "save": "Lưu cấu hình",
+          "help": "Thay đổi cấu hình được lưu ngay. Hãy khởi động lại Gateway để cài đặt hoặc gỡ các hook runtime NanoEvo."
+        },
+        "filters": {
+          "all": "Tất cả",
+          "evolvable": "Có thể tiến hóa",
+          "pending": "Đang chờ",
+          "aria": "Lọc các Skill tiến hóa",
+          "noMatch": "Không có Skill nào khớp với bộ lọc này."
+        },
+        "skillStates": {
+          "protected": "Tích hợp · được bảo vệ",
+          "reviewing": "Đang đánh giá bằng chứng",
+          "proposalPending": "{{count}} đề xuất đang chờ",
+          "conflict": "Xung đột đề xuất",
+          "updated": "Skill đã cập nhật",
+          "unavailable": "Hiện không khả dụng",
+          "collecting": "Đang thu thập {{count}}/{{threshold}}"
+        },
+        "panel": {
+          "loading": "Đang tải chi tiết tiến hóa Skill…",
+          "select": "Chọn một Skill để xem trạng thái tiến hóa."
+        },
+        "tabs": {
+          "overview": "Tổng quan",
+          "proposal": "Đề xuất",
+          "proposalCount": "Đề xuất {{count}}",
+          "versions": "Phiên bản",
+          "versionsCount": "Phiên bản {{count}}",
+          "aria": "Các phần tiến hóa Skill"
+        },
+        "states": {
+          "protected": "Được bảo vệ",
+          "collecting": "Đang thu thập",
+          "reviewing": "Đang đánh giá",
+          "proposal_pending": "Chờ duyệt",
+          "updated": "Đã cập nhật",
+          "conflict": "Xung đột",
+          "unavailable": "Không khả dụng"
+        },
+        "protected": {
+          "title": "Skill tích hợp được bảo vệ",
+          "description": "NanoEvo V1 chỉ cải thiện Workspace Skill hiện có. Skill tích hợp luôn ở chế độ chỉ đọc."
+        },
+        "progress": {
+          "title": "Tiến độ đánh giá tự động",
+          "remaining": "Cần thêm {{count}} quỹ đạo được gán trước lần đánh giá định kỳ",
+          "ready": "Đã đạt ngưỡng đánh giá định kỳ",
+          "aria": "Tiến độ đánh giá tự động"
+        },
+        "review": {
+          "title": "Yêu cầu đánh giá",
+          "help": "Phản hồi tùy chọn có thể định hướng bộ đánh giá, nhưng không thể bỏ qua chính sách hoặc bước phê duyệt.",
+          "placeholder": "Mô tả một vấn đề Skill cụ thể cần xác minh…",
+          "runtimeRequired": "Hãy bật NanoEvo và khởi động lại Gateway trước.",
+          "evidenceRequired": "Cần ít nhất một quỹ đạo đã lưu.",
+          "alreadyRunning": "Một lượt đánh giá đang chạy.",
+          "available": "Có {{count}} bản ghi bằng chứng gần đây.",
+          "feedbackAvailable": "Phản hồi sẽ được kiểm tra với {{count}} bản ghi bằng chứng gần đây.",
+          "thresholdAvailable": "Đã đạt ngưỡng định kỳ; có thể yêu cầu đánh giá ngay.",
+          "thresholdRequired": "Cần thêm {{count}} quỹ đạo được quy thuộc, hoặc thêm phản hồi cụ thể để yêu cầu đánh giá sớm.",
+          "request": "Yêu cầu đánh giá"
+        },
+        "result": {
+          "title": "Lượt đánh giá gần nhất",
+          "noChange": "Không tạo ra thay đổi",
+          "failed": "Đánh giá thất bại",
+          "timedOut": "Đánh giá hết thời gian",
+          "proposal": "Đã tạo đề xuất thay đổi",
+          "running": "Đang đánh giá",
+          "noChangeReason": "Bằng chứng hiện có chưa xác minh được lỗi Skill có thể tái sử dụng.",
+          "failedReason": "Bộ đánh giá không thể hoàn tất đánh giá.",
+          "timedOutReason": "Bộ đánh giá không hoàn tất trong thời gian giới hạn."
+        },
+        "evidence": {
+          "independentTurns": "Lượt độc lập",
+          "independentProjects": "Dự án độc lập",
+          "notRequired": "Không bắt buộc",
+          "recent": "Bằng chứng gần đây đã khử định danh",
+          "objectiveFailure": "Thất bại khách quan",
+          "completed": "Đã hoàn thành",
+          "metadata": "{{tools}} lượt gọi công cụ · {{errors}} lỗi · {{date}}",
+          "empty": "Chưa lưu quỹ đạo nào được gán cho Skill này."
+        },
+        "proposal": {
+          "noneTitle": "Không có đề xuất đang chờ",
+          "noneDescription": "Một lượt đánh giá có thể kết luận không cần thay đổi. Chỉ các bản vá cục bộ có bằng chứng mới xuất hiện tại đây.",
+          "why": "Lý do thay đổi",
+          "gates": "Điều kiện bằng chứng",
+          "localReplacement": "Thay thế văn bản cục bộ",
+          "before": "Trước",
+          "after": "Sau",
+          "rejectTitle": "Từ chối đề xuất này?",
+          "rejectDescription": "Đề xuất sẽ được đánh dấu là đã từ chối và Workspace Skill không bị thay đổi.",
+          "rejectAction": "Từ chối đề xuất",
+          "reject": "Từ chối",
+          "approveTitle": "Phê duyệt và áp dụng thay đổi Skill này?",
+          "approveDescription": "NanoEvo sẽ xác minh lại bằng chứng và hash gốc, sao lưu SKILL.md hiện tại, rồi áp dụng một thay thế cục bộ này.",
+          "approveAction": "Phê duyệt và áp dụng"
+        },
+        "versions": {
+          "current": "Phiên bản hiện tại {{version}}",
+          "unknown": "không xác định",
+          "description": "NanoEvo lưu các phiên bản để so sánh hai phiên bản bất kỳ và chuyển đổi an toàn.",
+          "currentLabel": "Hiện tại",
+          "compareTitle": "Khác biệt phiên bản",
+          "baseVersion": "So sánh từ",
+          "targetVersion": "So sánh đến",
+          "compareAction": "So sánh phiên bản",
+          "noDiff": "Hai phiên bản giống nhau.",
+          "empty": "Chưa có bản sao lưu phiên bản. Bản sao lưu được tạo trước khi áp dụng bản vá đã phê duyệt.",
+          "switchTitle": "Chuyển sang phiên bản Skill này?",
+          "switchDescription": "NanoEvo sẽ sao lưu nội dung hiện tại trước khi chuyển sang phiên bản đã chọn.",
+          "switchAction": "Chuyển phiên bản"
+        },
+        "gates": {
+          "turns": "{{current}} / {{required}} lượt độc lập",
+          "projects": "{{current}} / {{required}} dự án độc lập",
+          "projectsNotRequired": "Các quỹ đạo này không yêu cầu độc lập dự án",
+          "feedbackException": "Đã ghi nhận ngoại lệ phản hồi rõ ràng của người dùng",
+          "policySatisfied": "Chính sách bằng chứng xác định đã được đáp ứng"
+        },
+        "dialogs": {
+          "cancel": "Hủy"
+        },
+        "messages": {
+          "configSaved": "Đã lưu cấu hình tiến hóa. Hãy khởi động lại Gateway khi được yêu cầu.",
+          "reviewRequested": "Đã yêu cầu đánh giá. Bằng chứng sẽ tiếp tục cập nhật trong bảng này.",
+          "proposalApplied": "Đã áp dụng đề xuất sau khi xác minh và sao lưu.",
+          "proposalRejected": "Đã từ chối đề xuất. Skill không bị thay đổi.",
+          "versionRestored": "Đã khôi phục phiên bản Skill trước.",
+          "versionSwitched": "Đã chuyển phiên bản Skill và sao lưu nội dung trước đó."
+        },
+        "errors": {
+          "requestFailed": "Yêu cầu tiến hóa thất bại.",
+          "unauthorized": "Bạn không có quyền quản lý tiến hóa Skill.",
+          "evolution_unavailable": "NanoEvo chưa hoạt động. Hãy lưu cấu hình và khởi động lại Gateway.",
+          "evolution_policy_violation": "Thao tác này bị chặn bởi chính sách tiến hóa Skill.",
+          "evolution_state_conflict": "Trạng thái tiến hóa Skill đã thay đổi. Hãy làm mới và thử lại.",
+          "evolution_not_found": "Không tìm thấy bản ghi tiến hóa Skill được yêu cầu.",
+          "invalid_evolution_values": "Yêu cầu tiến hóa chứa giá trị không hợp lệ.",
+          "evolution_base_hash_conflict": "SKILL.md đã thay đổi sau khi tạo đề xuất. Tệp không bị ghi đè.",
+          "evolution_route_not_found": "Không tìm thấy endpoint tiến hóa Skill được yêu cầu."
+        }
+      }
     },
     "voice": {
       "selectProvider": "Chon nha cung cap",

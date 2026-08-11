@@ -743,7 +743,29 @@
       "unavailableReasonLabel": "利用不可の理由",
       "rawInstructions": "元の SKILL.md",
       "rawInstructionsEmpty": "元の説明はありません。",
-      "detailDescription": "{{name}} の詳細。"
+      "detailDescription": "{{name}} の詳細。",
+      "evolution": {
+        "open": "進化管理", "title": "Skill 進化管理", "description": "匿名化された実行証拠から既存の Workspace Skill を改善します。", "loading": "NanoEvo を読み込み中…", "backToSkills": "Skill 一覧に戻る",
+        "summary": {"evolvable": "進化可能", "protected": "保護済み", "pending": "保留中"},
+        "regions": {"list": "Skill 進化一覧", "details": "選択した Skill の進化詳細"},
+        "runtime": {"title": "進化ランタイム", "configEnabled": "設定は有効", "configDisabled": "設定は無効", "runtimeActive": "ランタイムは稼働中", "runtimeInactive": "ランタイムは停止中", "restartRequired": "再起動が必要", "enableAria": "設定で Skill 進化を有効にする", "reviewInterval": "自動レビュー戦略", "reviewIntervalOption": "{{count}} 回使用ごとにレビュー", "modelPreset": "レビュー用モデルプリセット", "currentMainModel": "現在のメインモデルを使用", "save": "設定を保存", "help": "設定はすぐ保存されます。NanoEvo の Hook を追加または削除するには Gateway を再起動してください。"},
+        "filters": {"all": "すべて", "evolvable": "進化可能", "pending": "保留中", "aria": "進化 Skill を絞り込む", "noMatch": "条件に一致する Skill はありません。"},
+        "skillStates": {"protected": "組み込み · 保護済み", "reviewing": "証拠をレビュー中", "proposalPending": "提案 {{count}} 件が承認待ち", "conflict": "提案の競合", "updated": "Skill 更新済み", "unavailable": "現在利用不可", "collecting": "収集中 {{count}}/{{threshold}}"},
+        "panel": {"loading": "Skill 進化の詳細を読み込み中…", "select": "進化状態を確認する Skill を選択してください。"},
+        "tabs": {"overview": "概要", "proposal": "提案", "proposalCount": "提案 {{count}}", "versions": "バージョン", "versionsCount": "バージョン {{count}}", "aria": "Skill 進化セクション"},
+        "states": {"protected": "保護済み", "collecting": "収集中", "reviewing": "レビュー中", "proposal_pending": "承認待ち", "updated": "更新済み", "conflict": "競合", "unavailable": "利用不可"},
+        "protected": {"title": "保護された組み込み Skill", "description": "NanoEvo V1 は既存の Workspace Skill のみ改善します。組み込み Skill は常に読み取り専用です。"},
+        "progress": {"title": "自動レビューの進捗", "remaining": "定期レビューまであと {{count}} 件の帰属済み軌跡が必要です", "ready": "定期レビューのしきい値に達しました", "aria": "自動レビューの進捗"},
+        "review": {"title": "レビューを依頼", "help": "任意のフィードバックで Reviewer を絞り込めますが、ポリシーや承認は回避できません。", "placeholder": "確認したい具体的な Skill の問題を入力…", "runtimeRequired": "NanoEvo を有効にして Gateway を再起動してください。", "evidenceRequired": "保存済みの軌跡が少なくとも 1 件必要です。", "alreadyRunning": "レビューはすでに実行中です。", "available": "最近の証拠が {{count}} 件あります。", "feedbackAvailable": "フィードバックを最近の証拠 {{count}} 件と照合します。", "thresholdAvailable": "周期レビューのしきい値に達したため、今すぐ依頼できます。", "thresholdRequired": "あと {{count}} 件の帰属済み軌跡が必要です。具体的なフィードバックを入力すると早期レビューを依頼できます。", "request": "レビューを依頼"},
+        "result": {"title": "最新のレビュー", "noChange": "変更は生成されませんでした", "failed": "レビューに失敗しました", "timedOut": "レビューがタイムアウトしました", "proposal": "変更提案を作成しました", "running": "レビュー実行中", "noChangeReason": "利用可能な証拠では、再利用可能な Skill の欠陥を確認できませんでした。", "failedReason": "Reviewer はレビューを完了できませんでした。", "timedOutReason": "Reviewer は制限時間内に完了しませんでした。"},
+        "evidence": {"independentTurns": "独立したターン", "independentProjects": "独立したプロジェクト", "notRequired": "不要", "recent": "最近の匿名化済み証拠", "objectiveFailure": "目標失敗", "completed": "完了", "metadata": "ツール呼び出し {{tools}} 回 · エラー {{errors}} 件 · {{date}}", "empty": "この Skill に帰属する軌跡はまだ保存されていません。"},
+        "proposal": {"noneTitle": "保留中の提案はありません", "noneDescription": "レビュー結果が変更なしになる場合もあります。証拠に基づく局所パッチのみ表示します。", "why": "変更理由", "gates": "証拠ゲート", "localReplacement": "局所テキスト置換", "before": "変更前", "after": "変更後", "rejectTitle": "この提案を却下しますか？", "rejectDescription": "提案は却下済みとなり、Workspace Skill は変更されません。", "rejectAction": "提案を却下", "reject": "却下", "approveTitle": "この Skill 変更を承認して適用しますか？", "approveDescription": "NanoEvo は証拠とベースハッシュを再検証し、SKILL.md をバックアップしてから局所置換を適用します。", "approveAction": "承認して適用"},
+        "versions": {"current": "現在のバージョン {{version}}", "unknown": "不明", "description": "NanoEvo はバージョンを保持し、任意の2つを比較して安全に切り替えられます。", "currentLabel": "現在", "compareTitle": "バージョン差分", "baseVersion": "比較元", "targetVersion": "比較先", "compareAction": "バージョンを比較", "noDiff": "2つのバージョンに差分はありません。", "empty": "バージョンのバックアップはまだありません。承認済みパッチの適用前に作成されます。", "switchTitle": "この Skill バージョンに切り替えますか？", "switchDescription": "選択したバージョンへ切り替える前に現在の内容をバックアップします。", "switchAction": "バージョンを切り替え"},
+        "gates": {"turns": "独立ターン {{current}} / {{required}}", "projects": "独立プロジェクト {{current}} / {{required}}", "projectsNotRequired": "これらの軌跡にはプロジェクトの独立性は不要です", "feedbackException": "明示的なユーザーフィードバック例外を記録済み", "policySatisfied": "決定論的な証拠ポリシーを満たしています"},
+        "dialogs": {"cancel": "キャンセル"},
+        "messages": {"configSaved": "進化設定を保存しました。表示された場合は Gateway を再起動してください。", "reviewRequested": "レビューを依頼しました。証拠と状態はこのパネルで更新されます。", "proposalApplied": "検証とバックアップ後に提案を適用しました。", "proposalRejected": "提案を却下しました。Skill は変更されていません。", "versionRestored": "前の Skill バージョンを復元しました。", "versionSwitched": "Skill バージョンを切り替え、以前の内容をバックアップしました。"},
+        "errors": {"requestFailed": "Skill 進化リクエストに失敗しました。", "unauthorized": "Skill 進化を管理する権限がありません。", "evolution_unavailable": "NanoEvo は稼働していません。設定を保存して Gateway を再起動してください。", "evolution_policy_violation": "Skill 進化ポリシーにより操作が拒否されました。", "evolution_state_conflict": "Skill 進化の状態が変わりました。更新して再試行してください。", "evolution_not_found": "指定した Skill 進化レコードが見つかりません。", "invalid_evolution_values": "Skill 進化リクエストの値が無効です。", "evolution_base_hash_conflict": "提案作成後に SKILL.md が変更されたため、上書きしませんでした。", "evolution_route_not_found": "指定した Skill 進化エンドポイントが見つかりません。"}
+      }
     },
     "voice": {
       "selectProvider": "プロバイダーを選択",

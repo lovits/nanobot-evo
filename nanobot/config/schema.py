@@ -181,6 +181,25 @@ class AgentsConfig(Base):
     defaults: AgentDefaults = Field(default_factory=AgentDefaults)
 
 
+class EvolutionConfig(Base):
+    """Evolution control configuration."""
+
+    enabled: bool = False
+    review_every_n_trajectories: Literal[5, 10, 20, 100] = Field(
+        default=10,
+        validation_alias=AliasChoices(
+            "reviewEveryNTrajectories",
+            "review_every_n_trajectories",
+        ),
+        serialization_alias="reviewEveryNTrajectories",
+    )
+    review_model_preset: str | None = Field(
+        default=None,
+        validation_alias="reviewModelPreset",
+        serialization_alias="reviewModelPreset",
+    )
+
+
 class ProviderConfig(Base):
     """LLM provider configuration."""
 
@@ -412,6 +431,7 @@ class Config(BaseSettings):
     api: ApiConfig = Field(default_factory=ApiConfig)
     gateway: GatewayConfig = Field(default_factory=GatewayConfig)
     tools: ToolsConfig = Field(default_factory=ToolsConfig)
+    evolution: EvolutionConfig = Field(default_factory=EvolutionConfig)
     model_presets: dict[str, ModelPresetConfig] = Field(
         default_factory=dict,
         validation_alias=AliasChoices("modelPresets", "model_presets"),

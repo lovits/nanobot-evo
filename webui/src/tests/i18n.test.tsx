@@ -365,6 +365,34 @@ describe("webui i18n", () => {
     }
   });
 
+  it("localizes the Skill evolution control plane for every registered locale", () => {
+    const english = resources.en.common.settings.skills.evolution;
+
+    for (const [locale, resource] of Object.entries(resources)) {
+      const evolution = resource.common.settings.skills.evolution;
+      expect(evolution.title).toBeTruthy();
+      expect(evolution.runtime.title).toBeTruthy();
+      expect(evolution.proposal.approveAction).toBeTruthy();
+      expect(evolution.versions.switchAction).toBeTruthy();
+
+      if (locale !== "en") {
+        expect({
+          locale,
+          untranslated: [
+            evolution.title === english.title ? "title" : null,
+            evolution.runtime.title === english.runtime.title ? "runtime.title" : null,
+            evolution.proposal.approveAction === english.proposal.approveAction
+              ? "proposal.approveAction"
+              : null,
+            evolution.versions.switchAction === english.versions.switchAction
+              ? "versions.switchAction"
+              : null,
+          ].filter(Boolean),
+        }).toEqual({ locale, untranslated: [] });
+      }
+    }
+  });
+
   it("keeps slash commands localized for every registered locale", () => {
     for (const resource of Object.values(resources)) {
       const slash = resource.common.thread.composer.slash;

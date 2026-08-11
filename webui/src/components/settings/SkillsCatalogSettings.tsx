@@ -1,8 +1,18 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { TFunction } from "i18next";
-import { Brain, Check, CircleAlert, KeyRound, Loader2, Terminal } from "lucide-react";
+import {
+  Brain,
+  BrainCircuit,
+  Check,
+  CircleAlert,
+  KeyRound,
+  Loader2,
+  Terminal,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { SkillEvolutionSheet } from "@/components/settings/SkillEvolutionSheet";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { fetchSkillDetail } from "@/lib/api";
 import type { SkillDetail, SkillSummary } from "@/lib/types";
@@ -13,6 +23,8 @@ export function SkillsCatalogSettings({ skills }: { skills: SkillSummary[] }) {
   const { t } = useTranslation();
   const availableCount = skills.filter((skill) => skill.available).length;
   const [selectedSkill, setSelectedSkill] = useState<SkillSummary | null>(null);
+  const [evolutionOpen, setEvolutionOpen] = useState(false);
+  const evolutionButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="space-y-7">
@@ -22,13 +34,27 @@ export function SkillsCatalogSettings({ skills }: { skills: SkillSummary[] }) {
             defaultValue: "Review the instruction skills this agent can load during a conversation.",
           })}
         </p>
-        <span className="text-[12px] font-medium text-muted-foreground">
-          {t("settings.skills.caption", {
-            available: availableCount,
-            total: skills.length,
-            defaultValue: "{{available}} available · {{total}} total",
-          })}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[12px] font-medium text-muted-foreground">
+            {t("settings.skills.caption", {
+              available: availableCount,
+              total: skills.length,
+              defaultValue: "{{available}} available · {{total}} total",
+            })}
+          </span>
+          <Button
+            ref={evolutionButtonRef}
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setEvolutionOpen(true)}
+          >
+            <BrainCircuit className="mr-2 h-4 w-4" aria-hidden />
+            {t("settings.skills.evolution.open", {
+              defaultValue: "Evolution management",
+            })}
+          </Button>
+        </div>
       </section>
 
       <section>
@@ -63,6 +89,11 @@ export function SkillsCatalogSettings({ skills }: { skills: SkillSummary[] }) {
         onOpenChange={(open) => {
           if (!open) setSelectedSkill(null);
         }}
+      />
+      <SkillEvolutionSheet
+        open={evolutionOpen}
+        onOpenChange={setEvolutionOpen}
+        returnFocusRef={evolutionButtonRef}
       />
     </div>
   );

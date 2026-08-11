@@ -757,7 +757,179 @@
       "unavailableReasonLabel": "Unavailable reason",
       "rawInstructions": "Raw SKILL.md",
       "rawInstructionsEmpty": "No raw instructions.",
-      "detailDescription": "Details for {{name}}."
+      "detailDescription": "Details for {{name}}.",
+      "evolution": {
+        "open": "Evolution management",
+        "title": "Skill evolution management",
+        "description": "Improve existing Workspace Skills from redacted execution evidence.",
+        "loading": "Loading NanoEvo…",
+        "backToSkills": "Back to Skills",
+        "summary": {
+          "evolvable": "Evolvable",
+          "protected": "Protected",
+          "pending": "Pending"
+        },
+        "regions": {
+          "list": "Skill evolution list",
+          "details": "Selected Skill evolution details"
+        },
+        "runtime": {
+          "title": "Evolution runtime",
+          "configEnabled": "Config enabled",
+          "configDisabled": "Config disabled",
+          "runtimeActive": "Runtime active",
+          "runtimeInactive": "Runtime inactive",
+          "restartRequired": "Restart required",
+          "enableAria": "Enable Skill evolution in configuration",
+          "reviewInterval": "Automatic review strategy",
+          "reviewIntervalOption": "Review every {{count}} uses",
+          "modelPreset": "Review model preset",
+          "currentMainModel": "Use current main model",
+          "save": "Save configuration",
+          "help": "Configuration changes are saved immediately. Restart Gateway to install or remove the NanoEvo runtime hooks."
+        },
+        "filters": {
+          "all": "All",
+          "evolvable": "Evolvable",
+          "pending": "Pending",
+          "aria": "Filter evolution Skills",
+          "noMatch": "No Skills match this filter."
+        },
+        "skillStates": {
+          "protected": "Built-in · protected",
+          "reviewing": "Reviewing evidence",
+          "proposalPending": "{{count}} proposal pending",
+          "conflict": "Proposal conflict",
+          "updated": "Skill updated",
+          "unavailable": "Currently unavailable",
+          "collecting": "Collecting {{count}}/{{threshold}}"
+        },
+        "panel": {
+          "loading": "Loading Skill evolution details…",
+          "select": "Select a Skill to inspect its evolution state."
+        },
+        "tabs": {
+          "overview": "Overview",
+          "proposal": "Proposal",
+          "proposalCount": "Proposal {{count}}",
+          "versions": "Versions",
+          "versionsCount": "Versions {{count}}",
+          "aria": "Skill evolution sections"
+        },
+        "states": {
+          "protected": "Protected",
+          "collecting": "Collecting",
+          "reviewing": "Reviewing",
+          "proposal_pending": "Pending review",
+          "updated": "Updated",
+          "conflict": "Conflict",
+          "unavailable": "Unavailable"
+        },
+        "protected": {
+          "title": "Protected built-in Skill",
+          "description": "NanoEvo V1 only improves existing Workspace Skills. Built-in Skills remain read-only."
+        },
+        "progress": {
+          "title": "Automatic review progress",
+          "remaining": "{{count}} more attributed trajectories before periodic review",
+          "ready": "Periodic review threshold reached",
+          "aria": "Automatic review progress"
+        },
+        "review": {
+          "title": "Request a review",
+          "help": "Optional feedback can focus the Reviewer, but cannot bypass policy or approval.",
+          "placeholder": "Describe one concrete Skill issue to verify…",
+          "runtimeRequired": "Enable NanoEvo and restart Gateway first.",
+          "evidenceRequired": "At least one persisted trajectory is required.",
+          "alreadyRunning": "A review is already running.",
+          "available": "{{count}} recent evidence record(s) available.",
+          "feedbackAvailable": "The feedback will be checked against {{count}} recent evidence record(s).",
+          "thresholdAvailable": "The periodic threshold is reached; a review can be requested now.",
+          "thresholdRequired": "{{count}} more attributed trajectory record(s) are needed, or add concrete feedback to request an early review.",
+          "request": "Request review"
+        },
+        "result": {
+          "title": "Latest review",
+          "noChange": "No modification produced",
+          "failed": "Review failed",
+          "timedOut": "Review timed out",
+          "proposal": "Modification proposal created",
+          "running": "Review in progress",
+          "noChangeReason": "The available evidence did not verify a reusable Skill defect.",
+          "failedReason": "The Reviewer could not complete the review.",
+          "timedOutReason": "The Reviewer did not finish within the time limit."
+        },
+        "evidence": {
+          "independentTurns": "Independent turns",
+          "independentProjects": "Independent projects",
+          "notRequired": "Not required",
+          "recent": "Recent redacted evidence",
+          "objectiveFailure": "Objective failure",
+          "completed": "Completed",
+          "metadata": "{{tools}} tool calls · {{errors}} errors · {{date}}",
+          "empty": "No attributed trajectories have been saved for this Skill."
+        },
+        "proposal": {
+          "noneTitle": "No pending proposal",
+          "noneDescription": "A review may conclude with no change. Only evidence-backed local patches appear here.",
+          "why": "Why this change",
+          "gates": "Evidence gates",
+          "localReplacement": "Local text replacement",
+          "before": "Before",
+          "after": "After",
+          "rejectTitle": "Reject this proposal?",
+          "rejectDescription": "The proposal will be marked rejected and the Workspace Skill will remain unchanged.",
+          "rejectAction": "Reject proposal",
+          "reject": "Reject",
+          "approveTitle": "Approve and apply this Skill change?",
+          "approveDescription": "NanoEvo will revalidate the evidence and base hash, back up the current SKILL.md, then apply this one local replacement.",
+          "approveAction": "Approve and apply"
+        },
+        "versions": {
+          "current": "Current version {{version}}",
+          "unknown": "unknown",
+          "description": "NanoEvo retains versions permanently so you can compare any two and switch safely.",
+          "currentLabel": "Current",
+          "compareTitle": "Version difference",
+          "baseVersion": "Compare from",
+          "targetVersion": "Compare to",
+          "compareAction": "Compare versions",
+          "noDiff": "These versions are identical.",
+          "empty": "No version backup exists yet. A backup is created before an approved patch is applied.",
+          "switchTitle": "Switch to this Skill version?",
+          "switchDescription": "NanoEvo will back up the current content before switching to the selected version.",
+          "switchAction": "Switch version"
+        },
+        "gates": {
+          "turns": "{{current}} / {{required}} independent turns",
+          "projects": "{{current}} / {{required}} independent projects",
+          "projectsNotRequired": "Project independence is not required for these traces",
+          "feedbackException": "Explicit user feedback exception is recorded",
+          "policySatisfied": "Deterministic evidence policy is satisfied"
+        },
+        "dialogs": {
+          "cancel": "Cancel"
+        },
+        "messages": {
+          "configSaved": "Evolution configuration saved. Restart Gateway when indicated.",
+          "reviewRequested": "Review requested. Evidence will continue to update in this panel.",
+          "proposalApplied": "Proposal applied after validation and backup.",
+          "proposalRejected": "Proposal rejected. The Skill was not changed.",
+          "versionRestored": "The previous Skill version was restored.",
+          "versionSwitched": "Skill version switched. The previous content was backed up."
+        },
+        "errors": {
+          "requestFailed": "Evolution request failed.",
+          "unauthorized": "You are not authorized to manage Skill evolution.",
+          "evolution_unavailable": "NanoEvo is not active. Save the configuration and restart Gateway.",
+          "evolution_policy_violation": "This action was blocked by the Skill evolution policy.",
+          "evolution_state_conflict": "The Skill evolution state changed. Refresh and try again.",
+          "evolution_not_found": "The requested Skill evolution record was not found.",
+          "invalid_evolution_values": "The Skill evolution request contains invalid values.",
+          "evolution_base_hash_conflict": "SKILL.md changed after this proposal was created. The file was not overwritten.",
+          "evolution_route_not_found": "The requested Skill evolution endpoint was not found."
+        }
+      }
     },
     "voice": {
       "selectProvider": "Select provider",

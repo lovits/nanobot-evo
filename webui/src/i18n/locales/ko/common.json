@@ -743,7 +743,29 @@
       "unavailableReasonLabel": "사용 불가 이유",
       "rawInstructions": "원본 SKILL.md",
       "rawInstructionsEmpty": "원본 지침이 없습니다.",
-      "detailDescription": "{{name}} 세부 정보."
+      "detailDescription": "{{name}} 세부 정보.",
+      "evolution": {
+        "open": "진화 관리", "title": "Skill 진화 관리", "description": "비식별화된 실행 증거로 기존 Workspace Skill을 개선합니다.", "loading": "NanoEvo 불러오는 중…", "backToSkills": "Skill 목록으로 돌아가기",
+        "summary": {"evolvable": "진화 가능", "protected": "보호됨", "pending": "대기 중"},
+        "regions": {"list": "Skill 진화 목록", "details": "선택한 Skill 진화 세부 정보"},
+        "runtime": {"title": "진화 런타임", "configEnabled": "설정 활성화됨", "configDisabled": "설정 비활성화됨", "runtimeActive": "런타임 활성", "runtimeInactive": "런타임 비활성", "restartRequired": "재시작 필요", "enableAria": "설정에서 Skill 진화 활성화", "reviewInterval": "자동 검토 전략", "reviewIntervalOption": "{{count}}회 사용마다 검토", "modelPreset": "검토 모델 프리셋", "currentMainModel": "현재 기본 모델 사용", "save": "설정 저장", "help": "설정은 즉시 저장됩니다. NanoEvo Hook을 설치하거나 제거하려면 Gateway를 재시작하세요."},
+        "filters": {"all": "전체", "evolvable": "진화 가능", "pending": "대기 중", "aria": "진화 Skill 필터", "noMatch": "필터와 일치하는 Skill이 없습니다."},
+        "skillStates": {"protected": "내장 · 보호됨", "reviewing": "증거 검토 중", "proposalPending": "제안 {{count}}개 승인 대기", "conflict": "제안 충돌", "updated": "Skill 업데이트됨", "unavailable": "현재 사용 불가", "collecting": "수집 중 {{count}}/{{threshold}}"},
+        "panel": {"loading": "Skill 진화 세부 정보 불러오는 중…", "select": "진화 상태를 확인할 Skill을 선택하세요."},
+        "tabs": {"overview": "개요", "proposal": "제안", "proposalCount": "제안 {{count}}", "versions": "버전", "versionsCount": "버전 {{count}}", "aria": "Skill 진화 섹션"},
+        "states": {"protected": "보호됨", "collecting": "수집 중", "reviewing": "검토 중", "proposal_pending": "승인 대기", "updated": "업데이트됨", "conflict": "충돌", "unavailable": "사용 불가"},
+        "protected": {"title": "보호된 내장 Skill", "description": "NanoEvo V1은 기존 Workspace Skill만 개선합니다. 내장 Skill은 항상 읽기 전용입니다."},
+        "progress": {"title": "자동 검토 진행률", "remaining": "정기 검토까지 귀속된 궤적 {{count}}개가 더 필요합니다", "ready": "정기 검토 임계값에 도달했습니다", "aria": "자동 검토 진행률"},
+        "review": {"title": "검토 요청", "help": "선택적 피드백은 Reviewer의 초점을 맞출 수 있지만 정책이나 승인을 우회할 수 없습니다.", "placeholder": "확인할 구체적인 Skill 문제를 설명하세요…", "runtimeRequired": "NanoEvo를 활성화하고 Gateway를 재시작하세요.", "evidenceRequired": "저장된 궤적이 하나 이상 필요합니다.", "alreadyRunning": "검토가 이미 진행 중입니다.", "available": "최근 증거 {{count}}개를 사용할 수 있습니다.", "feedbackAvailable": "피드백을 최근 증거 {{count}}개와 대조합니다.", "thresholdAvailable": "주기 검토 기준에 도달하여 지금 검토를 요청할 수 있습니다.", "thresholdRequired": "귀속된 궤적 {{count}}개가 더 필요합니다. 구체적인 피드백을 입력하면 조기 검토를 요청할 수 있습니다.", "request": "검토 요청"},
+        "result": {"title": "최근 검토", "noChange": "변경 사항이 생성되지 않음", "failed": "검토 실패", "timedOut": "검토 시간 초과", "proposal": "변경 제안 생성됨", "running": "검토 진행 중", "noChangeReason": "사용 가능한 증거로 재사용 가능한 Skill 결함을 확인하지 못했습니다.", "failedReason": "Reviewer가 검토를 완료하지 못했습니다.", "timedOutReason": "Reviewer가 제한 시간 내에 완료하지 못했습니다."},
+        "evidence": {"independentTurns": "독립 턴", "independentProjects": "독립 프로젝트", "notRequired": "필요 없음", "recent": "최근 비식별화 증거", "objectiveFailure": "목표 실패", "completed": "완료", "metadata": "도구 호출 {{tools}}회 · 오류 {{errors}}개 · {{date}}", "empty": "이 Skill에 귀속된 궤적이 아직 저장되지 않았습니다."},
+        "proposal": {"noneTitle": "대기 중인 제안 없음", "noneDescription": "검토 결과 변경이 필요하지 않을 수 있습니다. 증거에 기반한 국소 패치만 표시됩니다.", "why": "변경 이유", "gates": "증거 게이트", "localReplacement": "국소 텍스트 교체", "before": "변경 전", "after": "변경 후", "rejectTitle": "이 제안을 거절할까요?", "rejectDescription": "제안은 거절됨으로 표시되고 Workspace Skill은 변경되지 않습니다.", "rejectAction": "제안 거절", "reject": "거절", "approveTitle": "이 Skill 변경을 승인하고 적용할까요?", "approveDescription": "NanoEvo는 증거와 기준 해시를 다시 검증하고 SKILL.md를 백업한 뒤 국소 교체를 적용합니다.", "approveAction": "승인 및 적용"},
+        "versions": {"current": "현재 버전 {{version}}", "unknown": "알 수 없음", "description": "NanoEvo는 버전을 보관하여 임의의 두 버전을 비교하고 안전하게 전환할 수 있습니다.", "currentLabel": "현재", "compareTitle": "버전 차이", "baseVersion": "비교 기준", "targetVersion": "비교 대상", "compareAction": "버전 비교", "noDiff": "두 버전이 동일합니다.", "empty": "아직 버전 백업이 없습니다. 승인된 패치를 적용하기 전에 백업이 생성됩니다.", "switchTitle": "이 Skill 버전으로 전환할까요?", "switchDescription": "선택한 버전으로 전환하기 전에 현재 내용을 백업합니다.", "switchAction": "버전 전환"},
+        "gates": {"turns": "독립 턴 {{current}} / {{required}}", "projects": "독립 프로젝트 {{current}} / {{required}}", "projectsNotRequired": "이 궤적에는 프로젝트 독립성이 필요하지 않습니다", "feedbackException": "명시적 사용자 피드백 예외가 기록됨", "policySatisfied": "결정적 증거 정책을 충족함"},
+        "dialogs": {"cancel": "취소"},
+        "messages": {"configSaved": "진화 설정을 저장했습니다. 안내가 표시되면 Gateway를 재시작하세요.", "reviewRequested": "검토를 요청했습니다. 증거와 상태가 이 패널에서 계속 업데이트됩니다.", "proposalApplied": "검증과 백업 후 제안을 적용했습니다.", "proposalRejected": "제안을 거절했습니다. Skill은 변경되지 않았습니다.", "versionRestored": "이전 Skill 버전을 복원했습니다.", "versionSwitched": "Skill 버전을 전환하고 이전 내용을 백업했습니다."},
+        "errors": {"requestFailed": "Skill 진화 요청에 실패했습니다.", "unauthorized": "Skill 진화를 관리할 권한이 없습니다.", "evolution_unavailable": "NanoEvo가 활성 상태가 아닙니다. 설정을 저장하고 Gateway를 재시작하세요.", "evolution_policy_violation": "Skill 진화 정책이 이 작업을 차단했습니다.", "evolution_state_conflict": "Skill 진화 상태가 변경되었습니다. 새로 고친 후 다시 시도하세요.", "evolution_not_found": "요청한 Skill 진화 기록을 찾을 수 없습니다.", "invalid_evolution_values": "Skill 진화 요청에 잘못된 값이 있습니다.", "evolution_base_hash_conflict": "제안 생성 후 SKILL.md가 변경되어 파일을 덮어쓰지 않았습니다.", "evolution_route_not_found": "요청한 Skill 진화 엔드포인트를 찾을 수 없습니다."}
+      }
     },
     "voice": {
       "selectProvider": "제공자 선택",

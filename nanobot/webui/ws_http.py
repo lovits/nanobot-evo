@@ -170,6 +170,7 @@ class GatewayHTTPHandler:
         local_trigger_pending_ids: Callable[[str], set[str]] | None = None,
         channel_feature_action: Callable[..., Any] | None = None,
         channel_runtime_status: Callable[[], dict[str, Any]] | None = None,
+        evolution_service: Any | None = None,
         log: Any = logger,
     ) -> None:
         self.config = config
@@ -205,6 +206,15 @@ class GatewayHTTPHandler:
             runtime_capabilities=self._capabilities,
             channel_feature_action=channel_feature_action,
             channel_runtime_status=channel_runtime_status,
+        )
+        from nanobot.evolution.webui import EvolutionWebUIController
+
+        self.evolution_routes = EvolutionWebUIController(
+            workspace=skills_workspace_path,
+            service=evolution_service,
+            disabled_skills=self.disabled_skills,
+            check_api_token=self.check_api_token,
+            json_response=_http_json_response,
         )
 
     def workspace_controls_available(self, connection: Any) -> bool:
@@ -262,6 +272,11 @@ class GatewayHTTPHandler:
 
         # Automation routes
         response = await self._dispatch_automation_routes(request, got)
+        if response is not None:
+            return response
+
+        # Optional NanoEvo control-plane routes
+        response = await self.evolution_routes.dispatch(request, got)
         if response is not None:
             return response
 

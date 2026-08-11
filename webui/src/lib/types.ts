@@ -185,6 +185,131 @@ export interface SkillDetail extends SkillSummary {
 
 export interface SkillsPayload { skills: SkillSummary[]; }
 
+export type EvolutionSkillState =
+  | "protected"
+  | "collecting"
+  | "reviewing"
+  | "proposal_pending"
+  | "updated"
+  | "conflict"
+  | "unavailable";
+
+export interface EvolutionSkillSummary {
+  name: string;
+  description: string;
+  source: "workspace" | "builtin" | string;
+  available: boolean;
+  evolvable: boolean;
+  protection_reason: string | null;
+  state: EvolutionSkillState;
+  trajectory_count: number;
+  review_threshold: number;
+  remaining_trajectories: number;
+  review_running: boolean;
+  last_reviewed_at: string | null;
+  last_decision: string | null;
+  pending_proposal_count: number;
+  current_version: string | null;
+  backup_available?: boolean;
+}
+
+export interface EvolutionOverview {
+  schema_version: number;
+  enabled: boolean;
+  runtime_active: boolean;
+  restart_required: boolean;
+  review_every_n_trajectories: number;
+  review_interval_options: number[];
+  review_model_preset: string | null;
+  review_model_presets: string[];
+  summary: {
+    total: number;
+    evolvable: number;
+    protected: number;
+    reviewing: number;
+    pending_proposals: number;
+  };
+  skills: EvolutionSkillSummary[];
+}
+
+export interface EvolutionEvidence {
+  trace_id: string;
+  created_at: string;
+  turn_id: string;
+  project_scope_hash: string | null;
+  task_excerpt: string;
+  tool_calls: number;
+  tool_errors: number;
+  iterations: number;
+  objective_failure: boolean;
+  stop_reason: string | null;
+}
+
+export interface EvolutionEvidenceGates {
+  trace_count: number;
+  eligible: boolean;
+}
+
+export interface EvolutionProposal {
+  proposal_id: string;
+  skill_name: string;
+  reason: string;
+  status: string;
+  created_at: string;
+  base_hash: string;
+  evidence_trace_ids: string[];
+  patch: {
+    old_text: string;
+    new_text: string;
+  };
+  evidence_gates: EvolutionEvidenceGates;
+}
+
+export interface EvolutionVersion {
+  content_hash: string;
+  proposal_id: string;
+  created_at: string;
+  is_current: boolean;
+}
+
+export interface EvolutionVersionDiff {
+  base_hash: string;
+  target_hash: string;
+  diff: string;
+}
+
+export interface EvolutionReviewResult {
+  review_id: string;
+  status: string;
+  trigger: string;
+  decision: string | null;
+  reason: string | null;
+  requested_at: string;
+  completed_at: string | null;
+}
+
+export interface EvolutionSkillDetail {
+  skill: EvolutionSkillSummary & { backup_available: boolean };
+  evidence: EvolutionEvidence[];
+  latest_review: EvolutionReviewResult | null;
+  pending_proposal: EvolutionProposal | null;
+  versions: EvolutionVersion[];
+}
+
+export interface EvolutionActionResult {
+  ok: boolean;
+  review_id?: string;
+  proposal_id?: string;
+  state?: string;
+  status?: string;
+  backup_created?: boolean;
+  enabled?: boolean;
+  runtime_active?: boolean;
+  restart_required?: boolean;
+  review_every_n_trajectories?: number;
+  review_model_preset?: string | null;
+}
+
 /** Structured UI blob on ``progress`` WS frames; channels may add more ``kind`` values later. */
 export interface AgentUIBlob {
   kind: string;

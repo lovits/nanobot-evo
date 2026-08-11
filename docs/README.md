@@ -77,6 +77,14 @@ These pages explain implementation and extension points. You do not need them to
 | Goal | Read |
 |---|---|
 | Understand source ownership and runtime flow | [Architecture](./architecture.md) |
+| Understand the current fork before adding nanoevo | [Current nanobot architecture](./nanobot-current-architecture.md) |
+| Compare nanobot with the nanoevo extension | [nanobot vs nanoevo](./nanobot-vs-nanoevo.md) |
+| Review the nanoevo product and safety design | [nanoevo design](./nanoevo-design.md) |
+| Review nanoevo modules, fields, and integration points | [nanoevo technical architecture](./nanoevo-technical-architecture.md) |
+| Execute the seven-day nanoevo implementation | [nanoevo implementation plan](./nanoevo-implementation-plan.md) |
+| Review the NanoEvo Skills evolution WebUI experience | [NanoEvo WebUI design](./nanoevo-webui/ui-design.md) |
+| Implement the NanoEvo WebUI functions and API contract | [NanoEvo WebUI functional and API design](./nanoevo-webui/functional-api-design.md) |
+| Execute the NanoEvo WebUI delivery plan | [NanoEvo WebUI implementation plan](./nanoevo-webui/implementation-plan.md) |
 | Set up a development environment | [Development](./development.md) and [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | Add a channel package | [Channel Package Guide](./channel-package-guide.md) |
 | Build the WebUI source | [WebUI Development](../webui/README.md) |
