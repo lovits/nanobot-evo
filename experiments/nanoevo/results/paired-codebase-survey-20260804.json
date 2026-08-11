@@ -1,0 +1,986 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "started_at": "2026-08-04T10:08:24.880000+00:00",
+  "finished_at": "2026-08-04T10:12:08.153694+00:00",
+  "skill_name": "codebase-survey",
+  "model": "agnes-2.0-flash",
+  "baseline_source": "/Users/qianye/.nanobot/workspace/skills/codebase-survey/SKILL.md",
+  "evolution_result": "experiments/nanoevo/results/codebase-survey-market-final-20260727.json",
+  "evolved_skill_source": null,
+  "repeats": 1,
+  "repositories": [
+    {
+      "name": "blinker",
+      "url": "https://github.com/pallets-eco/blinker.git",
+      "commit": "c3364059663df1ddce32799d6b1922af89a345f6",
+      "required_terms": [
+        "blinker",
+        "signal",
+        "tests"
+      ]
+    },
+    {
+      "name": "flask",
+      "url": "https://github.com/pallets/flask.git",
+      "commit": "6a2f545bfd8ed31e19066a299296917e034aca58",
+      "required_terms": [
+        "flask",
+        "sansio",
+        "tests"
+      ]
+    },
+    {
+      "name": "jinja",
+      "url": "https://github.com/pallets/jinja.git",
+      "commit": "5ef70112a1ff19c05324ff889dd30405b1002044",
+      "required_terms": [
+        "jinja",
+        "environment",
+        "tests"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "codebase-survey:blinker:1",
+      "order": "BA",
+      "repository": "blinker",
+      "repetition": 1,
+      "quality_pass": true,
+      "v0_total_tokens": 68405,
+      "v1_total_tokens": 42378,
+      "token_reduction_pct": 38.048388275710835,
+      "v0_tool_calls": 13,
+      "v1_tool_calls": 8,
+      "tool_call_reduction_pct": 38.46153846153847,
+      "v0": {
+        "version": "v0",
+        "repository": "blinker",
+        "repetition": 1,
+        "content": "## Targeted Analysis: Blinker Repository\n\n### Repository Purpose\n\n**Blinker** is a Python library providing a fast, simple event dispatching system. It enables object-to-object and broadcast signaling, allowing any number of subscribers to listen for and react to events. The project is part of the **Pallets Community Ecosystem** (the same organization that maintains Flask), and is described as \"Production/Stable\" at version 1.10.0.dev.\n\n### Package Layout\n\nThe repository follows a standard Python source layout:\n\n```\nblinker/\n├── src/blinker/          # Main package (3 files, 593 lines)\n│   ├── __init__.py       # Public API exports\n│   ├── base.py           # Core Signal, NamedSignal, Namespace classes (512 lines)\n│   └── _utilities.py     # Internal helpers: Symbol, make_id, make_ref (64 lines)\n├── tests/                # Test suite (3 files, 594 lines)\n│   ├── test_signals.py   # Signal dispatch tests (500 lines)\n│   ├── test_context.py   # Context manager tests (68 lines)\n│   └── test_symbol.py    # Symbol identity tests (26 lines)\n├── docs/                 # Sphinx documentation\n├── pyproject.toml        # Build config (flit_core), pytest, mypy, pyright, ruff\n└── README.md             # Usage examples\n```\n\n**Key structural notes:**\n- Single package `blinker` with no subpackages\n- Core implementation concentrated in `src/blinker/base.py` (~86% of source code)\n- Tests mirror source structure with dedicated coverage for signals, context managers, and symbols\n- Total codebase: **1,187 lines** across 6 Python files — a focused, minimal library\n\n### Primary Runtime Path\n\nThe runtime entry point is `src/blinker/__init__.py`, which exports the public API:\n\n```python\nfrom .base import ANY, default_namespace, NamedSignal, Namespace, Signal, signal\n```\n\nThe main execution path flows through:\n1. **`signal(name)`** — creates or retrieves a `NamedSignal` from `default_namespace`\n2. **`Signal.connect()`** — registers receivers with optional sender filtering and weakref tracking\n3. **`Signal.send()`** — dispatches to matching receivers, supporting both sync and async (via `_async_wrapper`)\n\nThe library uses `weakref` for automatic cleanup of receivers/senders and `Symbol` singletons for the `ANY` sentinel value.\n\n### Test Layout\n\nTests are organized in `tests/` with pytest configuration in `pyproject.toml`:\n\n- **`testpaths = [\"tests\"]`** — pytest discovers all `test_*.py` files\n- **`asyncio_mode = \"auto\"`** — async test support via `pytest-asyncio`\n- **`filterwarnings = [\"error\"]`** — strict warning handling\n- **Coverage configured** for both `blinker` and `tests` source paths\n\nTest coverage is comprehensive relative to the small codebase:\n- `test_signals.py` (500 lines) — the bulk of signal behavior: connect/disconnect, sender filtering, weakrefs, async dispatch, muted context, cleanup\n- `test_context.py` (68 lines) — `connected_to()` and `muted()` context managers\n- `test_symbol.py` (26 lines) — Symbol singleton identity guarantees\n\nThe test-to-source ratio is nearly 1:1 (594 test lines vs 593 source lines), indicating thorough coverage for a library of this size.",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "find_files",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir",
+          "list_dir",
+          "read_file",
+          "read_file",
+          "read_file",
+          "exec",
+          "exec"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_cd49833dab54463d81ffa6c8",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v0/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_fe8cc39f808e4e6fadd3ac5c",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker"
+            },
+            "status": "success",
+            "result_excerpt": "📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📄 pyproject.toml\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_62e45f8e6c214c8fb42c970a",
+            "name": "find_files",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker",
+              "type": "py"
+            },
+            "status": "success",
+            "result_excerpt": "docs/conf.py\nsrc/blinker/__init__.py\nsrc/blinker/_utilities.py\nsrc/blinker/base.py\ntests/test_context.py\ntests/test_signals.py\ntests/test_symbol.py",
+            "error": null
+          },
+          {
+            "call_id": "call_fdb08493715b470991ceb665",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| # Blinker\n2| \n3| Blinker provides a fast dispatching system that allows any number of\n4| interested parties to subscribe to events, or \"signals\".\n5| \n6| \n7| ## Pallets Community Ecosystem\n8| \n9| > [!IMPORTANT]\\\n10| > This project is part of the Pallets Community Ecosystem. Pallets is the open\n11| > source organization that maintains Flask; Pallets-Eco enables community\n12| > maintenance of related projects. If you are interested in helping maintain\n13| > this project, please reach out on [the Pallets Discord server][discord].\n14| >\n15| > [discord]: https://discord.gg/pallets\n16| \n17| \n18| ## Example\n19| \n20| Signal receivers can subscribe to specific senders or receive signals\n21| sent by any sender.\n22| \n23| ```pycon\n24| >>> from blinker import signal\n25| >>> started = signal('round-started')\n26| >>> def each(round):\n27| ...     print(f\"Round {round}\")\n28| ...\n29| >>> started.connect(each)\n30| \n31| >>> def round_two(round):\n32| ...     print(\"This is round two.\")\n33| ...\n34| >>> st",
+            "error": null
+          },
+          {
+            "call_id": "call_3f19ecd63cef448abe396faa",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"blinker\"\n3| version = \"1.10.0.dev\"\n4| description = \"Fast, simple object-to-object and broadcast signaling\"\n5| readme = \"README.md\"\n6| license = \"MIT\"\n7| license-files = [\"LICENSE.txt\"]\n8| authors = [{ name = \"Jason Kirtland\" }]\n9| maintainers = [{ name = \"Pallets Ecosystem\", email = \"contact@palletsprojects.com\" }]\n10| classifiers = [\n11|     \"Development Status :: 5 - Production/Stable\",\n12|     \"Programming Language :: Python\",\n13|     \"Typing :: Typed\",\n14| ]\n15| requires-python = \">=3.9\"\n16| \n17| [project.urls]\n18| Documentation = \"https://blinker.readthedocs.io\"\n19| Source = \"https://github.com/pallets-eco/blinker/\"\n20| Chat = \"https://discord.gg/pallets\"\n21| \n22| [dependency-groups]\n23| dev = [\n24|     \"ruff\",\n25|     \"tox\",\n26|     \"tox-uv\",\n27| ]\n28| docs = [\n29|     \"pallets-sphinx-themes\",\n30|     \"sphinx\",\n31|     \"sphinxcontrib-log-cabinet\",\n32| ]\n33| docs-auto = [\n34|     \"sphinx-autobuild\",\n35| ]\n36| gha-update = [\n37|     \"gha-update ; python_ful",
+            "error": null
+          },
+          {
+            "call_id": "call_e1a96a43fc48488ca1880569",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/src/blinker"
+            },
+            "status": "success",
+            "result_excerpt": "📄 __init__.py\n📄 _utilities.py\n📄 base.py\n📄 py.typed",
+            "error": null
+          },
+          {
+            "call_id": "call_57933676d38b4fa986e2d846",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 test_context.py\n📄 test_signals.py\n📄 test_symbol.py",
+            "error": null
+          },
+          {
+            "call_id": "call_46dae1a0e2d447f894c8005f",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/docs"
+            },
+            "status": "success",
+            "result_excerpt": "📁 _static\n📄 conf.py\n📄 index.rst",
+            "error": null
+          },
+          {
+            "call_id": "call_cdbd09c4adf24ab0908139da",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/src/blinker/__init__.py"
+            },
+            "status": "success",
+            "result_excerpt": "1| from __future__ import annotations\n2| \n3| from .base import ANY\n4| from .base import default_namespace\n5| from .base import NamedSignal\n6| from .base import Namespace\n7| from .base import Signal\n8| from .base import signal\n9| \n10| __all__ = [\n11|     \"ANY\",\n12|     \"default_namespace\",\n13|     \"NamedSignal\",\n14|     \"Namespace\",\n15|     \"Signal\",\n16|     \"signal\",\n17| ]\n\n(End of file — 17 lines total)",
+            "error": null
+          },
+          {
+            "call_id": "call_505236ef552049338ea3647e",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/src/blinker/base.py"
+            },
+            "status": "success",
+            "result_excerpt": "1| from __future__ import annotations\n2| \n3| import collections.abc as c\n4| import sys\n5| import typing as t\n6| import weakref\n7| from collections import defaultdict\n8| from contextlib import contextmanager\n9| from functools import cached_property\n10| from inspect import iscoroutinefunction\n11| \n12| from ._utilities import make_id\n13| from ._utilities import make_ref\n14| from ._utilities import Symbol\n15| \n16| F = t.TypeVar(\"F\", bound=c.Callable[..., t.Any])\n17| \n18| ANY = Symbol(\"ANY\")\n19| \"\"\"Symbol for \"any sender\".\"\"\"\n20| \n21| ANY_ID = 0\n22| \n23| \n24| class Signal:\n25|     \"\"\"A notification emitter.\n26| \n27|     :param doc: The docstring for the signal.\n28|     \"\"\"\n29| \n30|     ANY = ANY\n31|     \"\"\"An alias for the :data:`~blinker.ANY` sender symbol.\"\"\"\n32| \n33|     set_class: type[set[t.Any]] = set\n34|     \"\"\"The set class to use for tracking connected receivers and senders.\n35|     Python's ``set`` is unordered. If receivers must be dispatched in the order\n36|     they were connec",
+            "error": null
+          },
+          {
+            "call_id": "call_5aa491989023424e9df16f9c",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/src/blinker/_utilities.py"
+            },
+            "status": "success",
+            "result_excerpt": "1| from __future__ import annotations\n2| \n3| import collections.abc as c\n4| import inspect\n5| import typing as t\n6| from weakref import ref\n7| from weakref import WeakMethod\n8| \n9| T = t.TypeVar(\"T\")\n10| \n11| \n12| class Symbol:\n13|     \"\"\"A constant symbol, nicer than ``object()``. Repeated calls return the\n14|     same instance.\n15| \n16|     >>> Symbol('foo') is Symbol('foo')\n17|     True\n18|     >>> Symbol('foo')\n19|     foo\n20|     \"\"\"\n21| \n22|     symbols: t.ClassVar[dict[str, Symbol]] = {}\n23| \n24|     def __new__(cls, name: str) -> Symbol:\n25|         if name in cls.symbols:\n26|             return cls.symbols[name]\n27| \n28|         obj = super().__new__(cls)\n29|         cls.symbols[name] = obj\n30|         return obj\n31| \n32|     def __init__(self, name: str) -> None:\n33|         self.name = name\n34| \n35|     def __repr__(self) -> str:\n36|         return self.name\n37| \n38|     def __getnewargs__(self) -> tuple[t.Any, ...]:\n39|         return (self.name,)\n40| \n41| \n42| def make_id(",
+            "error": null
+          },
+          {
+            "call_id": "call_b33ce69d66fc4684a9efef8d",
+            "name": "exec",
+            "params": {
+              "command": "cd /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker && find . -type f -name \"*.py\" | head -30"
+            },
+            "status": "success",
+            "result_excerpt": "./tests/test_signals.py\n./tests/test_context.py\n./tests/test_symbol.py\n./docs/conf.py\n./src/blinker/__init__.py\n./src/blinker/_utilities.py\n./src/blinker/base.py\n\n\nExit code: 0",
+            "error": null
+          },
+          {
+            "call_id": "call_c6090901047e41ccbbdb6280",
+            "name": "exec",
+            "params": {
+              "command": "cd /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker && wc -l tests/*.py src/blinker/*.py"
+            },
+            "status": "success",
+            "result_excerpt": "      68 tests/test_context.py\n     500 tests/test_signals.py\n      26 tests/test_symbol.py\n      17 src/blinker/__init__.py\n      64 src/blinker/_utilities.py\n     512 src/blinker/base.py\n    1187 total\n\n\nExit code: 0",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 66304,
+          "completion_tokens": 2101,
+          "total_tokens": 68405,
+          "provider_tokens": 68405,
+          "cached_tokens": 17408
+        },
+        "latency_seconds": 53.40217758298968,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "blinker": true,
+            "signal": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/blinker/base.py": true,
+            "src/blinker/__init__.py": true,
+            "tests/": true,
+            "pyproject.toml": true,
+            "tests": true
+          },
+          "grounded_path_rate": 1.0
+        },
+        "quality_pass": true
+      },
+      "v1": {
+        "version": "v1",
+        "repository": "blinker",
+        "repetition": 1,
+        "content": "## Targeted Repository Analysis: Blinker\n\n### Repository Purpose\n**Blinker** is a fast, simple object-to-object and broadcast signaling library for Python. It provides a dispatching system where interested parties can subscribe to events (\"signals\") and receive notifications. The project is part of the **Pallets Community Ecosystem** (the open-source organization behind Flask).\n\n### Package Layout\nThe repository follows a standard Python source layout:\n\n```\nblinker/\n├── src/\n│   └── blinker/              # Main package (3 modules)\n│       ├── __init__.py\n│       ├── _utilities.py\n│       ├── base.py\n│       └── py.typed\n├── tests/                    # Test suite (3 files)\n│   ├── test_context.py\n│   ├── test_signals.py\n│   └── test_symbol.py\n├── docs/                     # Sphinx documentation\n├── pyproject.toml            # Project config (flit build system)\n└── README.md\n```\n\n**Key files:**\n- `src/blinker/base.py` — Core signal implementation\n- `src/blinker/_utilities.py` — Internal utilities\n- `pyproject.toml` — Build configuration using `flit_core<4`\n\n### Primary Runtime Path\nThe package is installed as `blinker` from `src/blinker/`. The entry point is the module-level `signal()` function exported from `src/blinker/__init__.py`. The library requires **Python ≥3.9** and is typed (includes `py.typed` marker).\n\n### Test Layout\nTests are organized under `tests/` with three focused files:\n- `test_signals.py` — Signal dispatch behavior\n- `test_context.py` — Context-related functionality\n- `test_symbol.py` — Symbol handling\n\n**Test configuration** (from `pyproject.toml`):\n- Framework: **pytest** with **pytest-asyncio**\n- Mode: `asyncio_mode = \"auto\"` with function-scoped fixtures\n- Warnings treated as errors: `filterwarnings = [\"error\"]`\n- Coverage configured for both `blinker` and `tests` source paths\n\n### Summary\nThis is a small, focused library (~6 Python files total) implementing the observer/pub-sub pattern. The codebase is production-stable (version 1.10.0.dev, classifier: \"Production/Stable\") with strict typing (mypy strict mode, pyright standard mode) and comprehensive test coverage.",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "find_files",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir",
+          "exec"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_3dcd5d7c7f5b4ce5800f51b7",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v1/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_2404b8059dca4472bed731b8",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker"
+            },
+            "status": "success",
+            "result_excerpt": "📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📄 pyproject.toml\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_4c087faa313d4b89b69c13bc",
+            "name": "find_files",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker",
+              "type": "py"
+            },
+            "status": "success",
+            "result_excerpt": "docs/conf.py\nsrc/blinker/__init__.py\nsrc/blinker/_utilities.py\nsrc/blinker/base.py\ntests/test_context.py\ntests/test_signals.py\ntests/test_symbol.py",
+            "error": null
+          },
+          {
+            "call_id": "call_621c3a7e4290435cbc62bbeb",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"blinker\"\n3| version = \"1.10.0.dev\"\n4| description = \"Fast, simple object-to-object and broadcast signaling\"\n5| readme = \"README.md\"\n6| license = \"MIT\"\n7| license-files = [\"LICENSE.txt\"]\n8| authors = [{ name = \"Jason Kirtland\" }]\n9| maintainers = [{ name = \"Pallets Ecosystem\", email = \"contact@palletsprojects.com\" }]\n10| classifiers = [\n11|     \"Development Status :: 5 - Production/Stable\",\n12|     \"Programming Language :: Python\",\n13|     \"Typing :: Typed\",\n14| ]\n15| requires-python = \">=3.9\"\n16| \n17| [project.urls]\n18| Documentation = \"https://blinker.readthedocs.io\"\n19| Source = \"https://github.com/pallets-eco/blinker/\"\n20| Chat = \"https://discord.gg/pallets\"\n21| \n22| [dependency-groups]\n23| dev = [\n24|     \"ruff\",\n25|     \"tox\",\n26|     \"tox-uv\",\n27| ]\n28| docs = [\n29|     \"pallets-sphinx-themes\",\n30|     \"sphinx\",\n31|     \"sphinxcontrib-log-cabinet\",\n32| ]\n33| docs-auto = [\n34|     \"sphinx-autobuild\",\n35| ]\n36| gha-update = [\n37|     \"gha-update ; python_ful",
+            "error": null
+          },
+          {
+            "call_id": "call_91db0d86edb5412398d5dc42",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| # Blinker\n2| \n3| Blinker provides a fast dispatching system that allows any number of\n4| interested parties to subscribe to events, or \"signals\".\n5| \n6| \n7| ## Pallets Community Ecosystem\n8| \n9| > [!IMPORTANT]\\\n10| > This project is part of the Pallets Community Ecosystem. Pallets is the open\n11| > source organization that maintains Flask; Pallets-Eco enables community\n12| > maintenance of related projects. If you are interested in helping maintain\n13| > this project, please reach out on [the Pallets Discord server][discord].\n14| >\n15| > [discord]: https://discord.gg/pallets\n16| \n17| \n18| ## Example\n19| \n20| Signal receivers can subscribe to specific senders or receive signals\n21| sent by any sender.\n22| \n23| ```pycon\n24| >>> from blinker import signal\n25| >>> started = signal('round-started')\n26| >>> def each(round):\n27| ...     print(f\"Round {round}\")\n28| ...\n29| >>> started.connect(each)\n30| \n31| >>> def round_two(round):\n32| ...     print(\"This is round two.\")\n33| ...\n34| >>> st",
+            "error": null
+          },
+          {
+            "call_id": "call_61812caa67fe4768846539d4",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/src/blinker"
+            },
+            "status": "success",
+            "result_excerpt": "📄 __init__.py\n📄 _utilities.py\n📄 base.py\n📄 py.typed",
+            "error": null
+          },
+          {
+            "call_id": "call_e474ddba1c9f4ce39d0d552d",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 test_context.py\n📄 test_signals.py\n📄 test_symbol.py",
+            "error": null
+          },
+          {
+            "call_id": "call_c0cd3655008f4b609f306412",
+            "name": "exec",
+            "params": {
+              "command": "cd /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/blinker && git log --oneline -10 && echo \"---BRANCH---\" && git branch -a"
+            },
+            "status": "success",
+            "result_excerpt": "c336405 Merge branch 'stable'\n---BRANCH---\n* (HEAD detached at FETCH_HEAD)\n\n\nExit code: 0",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 41131,
+          "completion_tokens": 1247,
+          "total_tokens": 42378,
+          "provider_tokens": 42378
+        },
+        "latency_seconds": 29.425289332997636,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "blinker": true,
+            "signal": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/blinker/base.py": true,
+            "src/blinker/_utilities.py": true,
+            "pyproject.toml": true,
+            "src/blinker/": true,
+            "src/blinker/__init__.py": true,
+            "tests/": true,
+            "tests": true
+          },
+          "grounded_path_rate": 1.0
+        },
+        "quality_pass": true
+      }
+    },
+    {
+      "pair_id": "codebase-survey:flask:1",
+      "order": "AB",
+      "repository": "flask",
+      "repetition": 1,
+      "quality_pass": false,
+      "v0_total_tokens": 73248,
+      "v1_total_tokens": 45198,
+      "token_reduction_pct": 38.29456094364351,
+      "v0_tool_calls": 13,
+      "v1_tool_calls": 7,
+      "tool_call_reduction_pct": 46.15384615384615,
+      "v0": {
+        "version": "v0",
+        "repository": "flask",
+        "repetition": 1,
+        "content": "## Targeted Analysis: Flask Repository\n\n### Repository Purpose\n**Flask** is a lightweight WSGI web application framework for Python, developed by the Pallets organization. It provides a simple, extensible foundation for building web applications, built as a wrapper around Werkzeug (WSGI toolkit) and Jinja (template engine). Current version: `3.2.0.dev`.\n\n### Package Layout\nThe source code follows a `src/` layout:\n\n- **`src/flask/`** — Main package containing 26 Python modules\n- Core modules include:\n  - `app.py` (1,625 lines) — The `Flask` application class\n  - `cli.py` (1,127 lines) — Command-line interface\n  - `ctx.py` (540 lines) — Application and request context management\n  - `helpers.py` (682 lines) — Utility functions (url_for, redirect, etc.)\n  - `sessions.py` (385 lines) — Session handling\n  - `blueprints.py` (128 lines) — Blueprint support for modular apps\n  - `json/` — JSON serialization and providers\n  - `sansio/` — Framework-agnostic base implementations\n\n### Primary Runtime Path\nThe package root is `src/flask/`, with the main entry point at `src/flask/__init__.py` (39 lines) that exports the public API:\n\n```python\nfrom .app import Flask as Flask\nfrom .blueprints import Blueprint as Blueprint\nfrom .helpers import url_for, redirect, abort, flash\nfrom .templating import render_template\n# ... plus signals, globals, JSON utilities\n```\n\nThe CLI entry point is registered in `pyproject.toml` as `flask = \"flask.cli:main\"`.\n\n### Test Layout\nTests reside in `tests/` with **24 test modules** totaling ~7,685 lines:\n\n| Test File | Lines | Focus |\n|-----------|-------|-------|\n| `test_basic.py` | 1,970 | Core app functionality |\n| `test_blueprints.py` | 1,118 | Blueprint registration and usage |\n| `test_cli.py` | 703 | Command-line interface |\n| `test_templating.py` | 532 | Template rendering |\n| `test_helpers.py` | 377 | Utility functions |\n| `test_json.py` | 346 | JSON handling |\n| `test_testing.py` | 384 | Test client utilities |\n| `test_views.py` | 272 | Class-based views |\n| `test_appctx.py` | 265 | Application context |\n| `test_reqctx.py` | 249 | Request context |\n\nSupporting test infrastructure:\n- `tests/conftest.py` — Pytest fixtures\n- `tests/test_apps/` — Sample applications for integration testing (blueprintapp, cliapp, helloworld, subdomaintestmodule)\n- `tests/type_check/` — Static type checking test cases\n- `tests/templates/` and `tests/static/` — Test fixtures\n\nTest configuration in `pyproject.toml`:\n- Framework: **pytest** with `filterwarnings = [\"error\"]`\n- Coverage: configured for `flask` and `tests` source paths\n- Type checking: **mypy** (strict) and **pyright** on `src/` and `tests/type_check/`\n\n### Key Observations\n- **Scale**: ~6,300 lines of source code across 26 modules; ~7,700 lines of tests across 24 modules\n- **Architecture**: Clean separation between `flask/` (runtime) and `tests/` (verification), with `sansio/` subpackage for framework-agnostic code\n- **Testing depth**: Heavy coverage of core features (basic, blueprints, CLI, templating) with dedicated test apps for integration scenarios\n- **Type safety**: Both mypy (strict) and pyright configured; `py.typed` marker present in package",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "exec",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir",
+          "exec",
+          "exec",
+          "read_file",
+          "exec",
+          "exec",
+          "exec"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_ab8dd38659364064b108974e",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v0/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_44715139966a46df9c969124",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask"
+            },
+            "status": "success",
+            "result_excerpt": "📁 .devcontainer\n📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📁 examples\n📄 pyproject.toml\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_60ab9269331b4a5a82a2d012",
+            "name": "exec",
+            "params": {
+              "command": "ls -la /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/"
+            },
+            "status": "success",
+            "result_excerpt": "total 920\ndrwxr-xr-x@ 18 qianye  wheel     576  8  4 18:08 .\ndrwxr-xr-x@  5 qianye  wheel     160  8  4 18:08 ..\ndrwxr-xr-x@  4 qianye  wheel     128  8  4 18:08 .devcontainer\n-rw-r--r--@  1 qianye  wheel     233  8  4 18:08 .editorconfig\ndrwxr-xr-x@ 13 qianye  wheel     416  8  4 18:08 .git\ndrwxr-xr-x@  5 qianye  wheel     160  8  4 18:08 .github\n-rw-r--r--@  1 qianye  wheel      74  8  4 18:08 .gitignore\n-rw-r--r--@  1 qianye  wheel     844  8  4 18:08 .pre-commit-config.yaml\n-rw-r--r--@  1 qianye  wheel     242  8  4 18:08 .readthedocs.yaml\n-rw-r--r--@  1 qianye  wheel   73507  8  4 18:08 CHANGES.rst\ndrwxr-xr-x@ 37 qianye  wheel    1184  8  4 18:08 docs\ndrwxr-xr-x@  5 qianye  wheel     160  8  4 18:08 examples\n-rw-r--r--@  1 qianye  wheel    1475  8  4 18:08 LICENSE.txt\n-rw-r--r--@  1 qianye  wheel    6555  8  4 18:08 pyproject.toml\n-rw-r--r--@  1 qianye  wheel    1639  8  4 18:08 README.md\ndrwxr-xr-x@  3 qianye  wheel      96  8  4 18:08 src\ndrwxr-xr-x@ 29 qianye  wheel     928  8 ",
+            "error": null
+          },
+          {
+            "call_id": "call_c304d2afccc248d2b56da853",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"Flask\"\n3| version = \"3.2.0.dev\"\n4| description = \"A simple framework for building complex web applications.\"\n5| readme = \"README.md\"\n6| license = \"BSD-3-Clause\"\n7| license-files = [\"LICENSE.txt\"]\n8| maintainers = [{name = \"Pallets\", email = \"contact@palletsprojects.com\"}]\n9| classifiers = [\n10|     \"Development Status :: 5 - Production/Stable\",\n11|     \"Environment :: Web Environment\",\n12|     \"Framework :: Flask\",\n13|     \"Intended Audience :: Developers\",\n14|     \"Operating System :: OS Independent\",\n15|     \"Programming Language :: Python\",\n16|     \"Topic :: Internet :: WWW/HTTP :: Dynamic Content\",\n17|     \"Topic :: Internet :: WWW/HTTP :: WSGI\",\n18|     \"Topic :: Internet :: WWW/HTTP :: WSGI :: Application\",\n19|     \"Topic :: Software Development :: Libraries :: Application Frameworks\",\n20|     \"Typing :: Typed\",\n21| ]\n22| requires-python = \">=3.10\"\n23| dependencies = [\n24|     \"blinker>=1.9.0\",\n25|     \"click>=8.1.3\",\n26|     \"itsdangerous>=2.2.0\",\n27|    ",
+            "error": null
+          },
+          {
+            "call_id": "call_3f2d2a531510499ca776071c",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| <div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/flask/refs/heads/stable/docs/_static/flask-name.svg\" alt=\"\" height=\"150\"></div>\n2| \n3| # Flask\n4| \n5| Flask is a lightweight [WSGI] web application framework. It is designed\n6| to make getting started quick and easy, with the ability to scale up to\n7| complex applications. It began as a simple wrapper around [Werkzeug]\n8| and [Jinja], and has become one of the most popular Python web\n9| application frameworks.\n10| \n11| Flask offers suggestions, but doesn't enforce any dependencies or\n12| project layout. It is up to the developer to choose the tools and\n13| libraries they want to use. There are many extensions provided by the\n14| community that make adding new functionality easy.\n15| \n16| [WSGI]: https://wsgi.readthedocs.io/\n17| [Werkzeug]: https://werkzeug.palletsprojects.com/\n18| [Jinja]: https://jinja.palletsprojects.com/\n19| \n20| ## A Simple Example\n21| \n22| ```python\n23| # save this as app.py\n24| from flask ",
+            "error": null
+          },
+          {
+            "call_id": "call_7a65a945f1ad43e6b0b37d30",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src"
+            },
+            "status": "success",
+            "result_excerpt": "📁 flask",
+            "error": null
+          },
+          {
+            "call_id": "call_c30a257feb3c496b987aee9a",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 conftest.py\n📁 static\n📁 templates\n📄 test_appctx.py\n📁 test_apps\n📄 test_async.py\n📄 test_basic.py\n📄 test_blueprints.py\n📄 test_cli.py\n📄 test_config.py\n📄 test_converters.py\n📄 test_helpers.py\n📄 test_instance_config.py\n📄 test_json.py\n📄 test_json_tag.py\n📄 test_logging.py\n📄 test_regression.py\n📄 test_reqctx.py\n📄 test_request.py\n📄 test_session_interface.py\n📄 test_signals.py\n📄 test_subclassing.py\n📄 test_templating.py\n📄 test_testing.py\n📄 test_user_error_handler.py\n📄 test_views.py\n📁 type_check",
+            "error": null
+          },
+          {
+            "call_id": "call_8fbd509cefd84eceaf392d00",
+            "name": "exec",
+            "params": {
+              "command": "find /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src -type f | sort"
+            },
+            "status": "success",
+            "result_excerpt": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/__init__.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/__main__.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/app.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/blueprints.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/cli.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/config.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/ctx.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/debughelpers.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/globals.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/helpers.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/s",
+            "error": null
+          },
+          {
+            "call_id": "call_4e5da12710c6496cb19e3a38",
+            "name": "exec",
+            "params": {
+              "command": "find /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests -type f | sort | head -80"
+            },
+            "status": "success",
+            "result_excerpt": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/conftest.py\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/static/config.json\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/static/config.toml\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/static/index.html\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/_macro.html\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/context_template.html\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/escaping_template.html\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/mail.txt\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/nested/nested.txt\n/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/templates/non_esca",
+            "error": null
+          },
+          {
+            "call_id": "call_cd4566498e274b8899ee9c98",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/__init__.py"
+            },
+            "status": "success",
+            "result_excerpt": "1| from . import json as json\n2| from .app import Flask as Flask\n3| from .blueprints import Blueprint as Blueprint\n4| from .config import Config as Config\n5| from .ctx import after_this_request as after_this_request\n6| from .ctx import copy_current_request_context as copy_current_request_context\n7| from .ctx import has_app_context as has_app_context\n8| from .ctx import has_request_context as has_request_context\n9| from .globals import current_app as current_app\n10| from .globals import g as g\n11| from .globals import request as request\n12| from .globals import session as session\n13| from .helpers import abort as abort\n14| from .helpers import flash as flash\n15| from .helpers import get_flashed_messages as get_flashed_messages\n16| from .helpers import get_template_attribute as get_template_attribute\n17| from .helpers import make_response as make_response\n18| from .helpers import redirect as redirect\n19| from .helpers import send_file as send_file\n20| from .helpers import send_from_direc",
+            "error": null
+          },
+          {
+            "call_id": "call_582e2082d73b45a697f6e2b1",
+            "name": "exec",
+            "params": {
+              "command": "wc -l /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/*.py"
+            },
+            "status": "success",
+            "result_excerpt": "      39 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/__init__.py\n       3 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/__main__.py\n    1625 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/app.py\n     128 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/blueprints.py\n    1127 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/cli.py\n     367 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/config.py\n     540 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/ctx.py\n     179 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/debughelpers.py\n      77 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask/globals.py\n     682 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/",
+            "error": null
+          },
+          {
+            "call_id": "call_21595e4c49014df897b6a1ec",
+            "name": "exec",
+            "params": {
+              "command": "wc -l /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/*.py"
+            },
+            "status": "success",
+            "result_excerpt": "     112 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/conftest.py\n     265 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_appctx.py\n     145 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_async.py\n    1970 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_basic.py\n    1118 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_blueprints.py\n     703 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_cli.py\n     250 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_config.py\n      42 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_converters.py\n     377 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests/test_helpers.py\n     111 /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/",
+            "error": null
+          },
+          {
+            "call_id": "call_4c187abd5cba4f629111d298",
+            "name": "exec",
+            "params": {
+              "command": "git -C /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask log --oneline -10"
+            },
+            "status": "success",
+            "result_excerpt": "6a2f545 Merge branch 'stable'\n\n\nExit code: 0",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 71405,
+          "completion_tokens": 1843,
+          "total_tokens": 73248,
+          "provider_tokens": 73248,
+          "cached_tokens": 25344
+        },
+        "latency_seconds": 43.676794125000015,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "flask": true,
+            "sansio": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/": true,
+            "src/flask/": true,
+            "json/": false,
+            "sansio/": false,
+            "src/flask/__init__.py": true,
+            "pyproject.toml": true,
+            "tests/": true,
+            "tests/conftest.py": true,
+            "tests/test_apps/": true,
+            "tests/type_check/": true,
+            "tests/templates/": true,
+            "tests/static/": true,
+            "tests": true,
+            "flask/": false
+          },
+          "grounded_path_rate": 0.7857142857142857
+        },
+        "quality_pass": false
+      },
+      "v1": {
+        "version": "v1",
+        "repository": "flask",
+        "repetition": 1,
+        "content": "## Targeted Analysis: Flask Repository\n\n### Repository Purpose\n\n**Flask** is a lightweight WSGI web application framework for Python, developed by the Pallets organization. It began as a simple wrapper around Werkzeug and Jinja and has become one of the most popular Python web frameworks. The framework is designed to be easy to start with while scaling to complex applications, without enforcing specific dependencies or project layouts.\n\n### Package Layout\n\nThe source code follows a standard `src/` layout:\n\n- **`src/flask/`** — Main package directory containing core modules:\n  - `app.py` — Core Flask application class\n  - `blueprints.py` — Blueprint support for modular applications\n  - `cli.py` — Command-line interface (entry point: `flask.cli:main`)\n  - `config.py` — Configuration handling\n  - `ctx.py` — Application and request context management\n  - `helpers.py` — Utility functions\n  - `sessions.py` — Session handling\n  - `signals.py` — Blinker signal support\n  - `templating.py` — Jinja2 template integration\n  - `testing.py` — Test client utilities\n  - `views.py` — Class-based view support\n  - `wrappers.py` — Request/response wrapper classes\n  - `json/` — JSON handling subpackage\n  - `sansio/` — Framework-agnostic core (shared with other Pallets projects)\n\n- **`examples/`** — Tutorial and example applications (Celery, JavaScript integration)\n- **`docs/`** — Sphinx documentation with Pallets theme\n\n### Primary Runtime Path\n\nThe package root is **`src/flask/`**, with the CLI entry point defined in `pyproject.toml` as:\n```\nflask = \"flask.cli:main\"\n```\n\nThe main application class is `Flask` in `src/flask/app.py`, which imports from the `sansio` subpackage for framework-agnostic code.\n\n### Test Layout\n\nTests are organized under **`tests/`** with pytest as the test runner:\n\n- **Root test files** (30+ test modules):\n  - `test_basic.py`, `test_blueprints.py`, `test_cli.py`, `test_config.py`\n  - `test_helpers.py`, `test_json.py`, `test_session_interface.py`\n  - `test_templating.py`, `test_testing.py`, `test_views.py`\n  - `test_appctx.py`, `test_reqctx.py`, `test_request.py`\n  - `test_signals.py`, `test_async.py`, `test_regression.py`\n\n- **`tests/test_apps/`** — Isolated test applications for complex scenarios:\n  - `blueprintapp/` — Blueprint testing\n  - `cliapp/` — CLI testing with nested packages\n  - `helloworld/` — Simple WSGI app tests\n  - `subdomaintestmodule/` — Subdomain routing tests\n\n- **`tests/type_check/`** — Static type checking tests for mypy/pyright\n\n- **`tests/conftest.py`** — Shared pytest fixtures\n\n- **`tests/static/`** and **`tests/templates/`** — Test assets\n\nThe test configuration in `pyproject.toml` specifies:\n```toml\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\nfilterwarnings = [\"error\"]\n```\n\nThis indicates strict warning handling and a comprehensive test suite covering all major framework features.",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "find_files",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_43a6edc298594ac2a129fc27",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v1/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_fa9030388e0a4841965fe9dc",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask"
+            },
+            "status": "success",
+            "result_excerpt": "📁 .devcontainer\n📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📁 examples\n📄 pyproject.toml\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_4c3c1ba25e0546df83060b41",
+            "name": "find_files",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask",
+              "type": "py"
+            },
+            "status": "success",
+            "result_excerpt": "docs/conf.py\nexamples/celery/make_celery.py\nexamples/celery/src/task_app/__init__.py\nexamples/celery/src/task_app/tasks.py\nexamples/celery/src/task_app/views.py\nexamples/javascript/js_example/__init__.py\nexamples/javascript/js_example/views.py\nexamples/javascript/tests/conftest.py\nexamples/javascript/tests/test_js_example.py\nexamples/tutorial/flaskr/__init__.py\nexamples/tutorial/flaskr/auth.py\nexamples/tutorial/flaskr/blog.py\nexamples/tutorial/flaskr/db.py\nexamples/tutorial/tests/conftest.py\nexamples/tutorial/tests/test_auth.py\nexamples/tutorial/tests/test_blog.py\nexamples/tutorial/tests/test_db.py\nexamples/tutorial/tests/test_factory.py\nsrc/flask/__init__.py\nsrc/flask/__main__.py\nsrc/flask/app.py\nsrc/flask/blueprints.py\nsrc/flask/cli.py\nsrc/flask/config.py\nsrc/flask/ctx.py\nsrc/flask/debughelpers.py\nsrc/flask/globals.py\nsrc/flask/helpers.py\nsrc/flask/json/__init__.py\nsrc/flask/json/provider.py\nsrc/flask/json/tag.py\nsrc/flask/logging.py\nsrc/flask/sansio/app.py\nsrc/flask/sansio/blueprint",
+            "error": null
+          },
+          {
+            "call_id": "call_aacb984b70624a0da4396a11",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"Flask\"\n3| version = \"3.2.0.dev\"\n4| description = \"A simple framework for building complex web applications.\"\n5| readme = \"README.md\"\n6| license = \"BSD-3-Clause\"\n7| license-files = [\"LICENSE.txt\"]\n8| maintainers = [{name = \"Pallets\", email = \"contact@palletsprojects.com\"}]\n9| classifiers = [\n10|     \"Development Status :: 5 - Production/Stable\",\n11|     \"Environment :: Web Environment\",\n12|     \"Framework :: Flask\",\n13|     \"Intended Audience :: Developers\",\n14|     \"Operating System :: OS Independent\",\n15|     \"Programming Language :: Python\",\n16|     \"Topic :: Internet :: WWW/HTTP :: Dynamic Content\",\n17|     \"Topic :: Internet :: WWW/HTTP :: WSGI\",\n18|     \"Topic :: Internet :: WWW/HTTP :: WSGI :: Application\",\n19|     \"Topic :: Software Development :: Libraries :: Application Frameworks\",\n20|     \"Typing :: Typed\",\n21| ]\n22| requires-python = \">=3.10\"\n23| dependencies = [\n24|     \"blinker>=1.9.0\",\n25|     \"click>=8.1.3\",\n26|     \"itsdangerous>=2.2.0\",\n27|    ",
+            "error": null
+          },
+          {
+            "call_id": "call_b5589c59f2214cf0a5e11d43",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| <div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/flask/refs/heads/stable/docs/_static/flask-name.svg\" alt=\"\" height=\"150\"></div>\n2| \n3| # Flask\n4| \n5| Flask is a lightweight [WSGI] web application framework. It is designed\n6| to make getting started quick and easy, with the ability to scale up to\n7| complex applications. It began as a simple wrapper around [Werkzeug]\n8| and [Jinja], and has become one of the most popular Python web\n9| application frameworks.\n10| \n11| Flask offers suggestions, but doesn't enforce any dependencies or\n12| project layout. It is up to the developer to choose the tools and\n13| libraries they want to use. There are many extensions provided by the\n14| community that make adding new functionality easy.\n15| \n16| [WSGI]: https://wsgi.readthedocs.io/\n17| [Werkzeug]: https://werkzeug.palletsprojects.com/\n18| [Jinja]: https://jinja.palletsprojects.com/\n19| \n20| ## A Simple Example\n21| \n22| ```python\n23| # save this as app.py\n24| from flask ",
+            "error": null
+          },
+          {
+            "call_id": "call_7be0950422ac4179b52477ea",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/src/flask"
+            },
+            "status": "success",
+            "result_excerpt": "📄 __init__.py\n📄 __main__.py\n📄 app.py\n📄 blueprints.py\n📄 cli.py\n📄 config.py\n📄 ctx.py\n📄 debughelpers.py\n📄 globals.py\n📄 helpers.py\n📁 json\n📄 logging.py\n📄 py.typed\n📁 sansio\n📄 sessions.py\n📄 signals.py\n📄 templating.py\n📄 testing.py\n📄 typing.py\n📄 views.py\n📄 wrappers.py",
+            "error": null
+          },
+          {
+            "call_id": "call_3dcf05f799a841f88992c593",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/flask/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 conftest.py\n📁 static\n📁 templates\n📄 test_appctx.py\n📁 test_apps\n📄 test_async.py\n📄 test_basic.py\n📄 test_blueprints.py\n📄 test_cli.py\n📄 test_config.py\n📄 test_converters.py\n📄 test_helpers.py\n📄 test_instance_config.py\n📄 test_json.py\n📄 test_json_tag.py\n📄 test_logging.py\n📄 test_regression.py\n📄 test_reqctx.py\n📄 test_request.py\n📄 test_session_interface.py\n📄 test_signals.py\n📄 test_subclassing.py\n📄 test_templating.py\n📄 test_testing.py\n📄 test_user_error_handler.py\n📄 test_views.py\n📁 type_check",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 43779,
+          "completion_tokens": 1419,
+          "total_tokens": 45198,
+          "provider_tokens": 45198,
+          "cached_tokens": 23808
+        },
+        "latency_seconds": 33.299545540998224,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "flask": true,
+            "sansio": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/": true,
+            "src/flask/": true,
+            "json/": false,
+            "sansio/": false,
+            "examples/": true,
+            "docs/": true,
+            "pyproject.toml": true,
+            "src/flask/app.py": true,
+            "tests/": true,
+            "tests/test_apps/": true,
+            "blueprintapp/": false,
+            "cliapp/": false,
+            "helloworld/": false,
+            "subdomaintestmodule/": false,
+            "tests/type_check/": true,
+            "tests/conftest.py": true,
+            "tests/static/": true,
+            "tests/templates/": true
+          },
+          "grounded_path_rate": 0.6666666666666666
+        },
+        "quality_pass": false
+      }
+    },
+    {
+      "pair_id": "codebase-survey:jinja:1",
+      "order": "BA",
+      "repository": "jinja",
+      "repetition": 1,
+      "quality_pass": true,
+      "v0_total_tokens": 43314,
+      "v1_total_tokens": 43864,
+      "token_reduction_pct": -1.269797294177402,
+      "v0_tool_calls": 7,
+      "v1_tool_calls": 8,
+      "tool_call_reduction_pct": -14.285714285714285,
+      "v0": {
+        "version": "v0",
+        "repository": "jinja",
+        "repetition": 1,
+        "content": "## Targeted Repository Analysis: Jinja2\n\n### Repository Purpose\nJinja2 is a **fast, expressive, extensible templating engine** for Python. It allows developers to embed Python-like syntax in templates, which are then rendered with data to produce final documents (typically HTML). Key capabilities include template inheritance, macros, autoescaping for XSS prevention, async support, and a sandboxed environment for untrusted templates.\n\n### Package Layout\nThe repository follows a **src-layout** structure:\n\n- **`src/jinja2/`** — The primary runtime package containing 25 Python modules\n- **`tests/`** — Test suite with 22 test files plus `conftest.py`\n- **`docs/`** — Documentation source\n- **`examples/`** — Usage examples\n- **`scripts/`** — Build/utility scripts\n\nThe package is built with **flit_core** and distributed as a single module `jinja2` (`pyproject.toml` line 69).\n\n### Primary Runtime Path\nThe main runtime code lives in **`src/jinja2/`**, with core modules including:\n- `environment.py` — Template environment configuration\n- `lexer.py` / `parser.py` / `compiler.py` — Template compilation pipeline\n- `runtime.py` — Template execution runtime\n- `filters.py` / `tests.py` — Built-in filters and tests\n- `nodes.py` — AST node definitions\n- `sandbox.py` — Security sandbox for untrusted templates\n\n### Test Layout\nTests are organized in **`tests/`** using pytest:\n- **22 test files** covering all major subsystems (e.g., `test_lexnparse.py`, `test_filters.py`, `test_security.py`)\n- **`tests/res/`** — Test resource fixtures\n- **`tests/conftest.py`** — Shared pytest fixtures\n- Configuration in `pyproject.toml` (lines 86-90) sets `testpaths = [\"tests\"]` with strict warning filters\n\nThe test suite is comprehensive, covering compilation, runtime behavior, async operations, security constraints, and regression cases.",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "find_files",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_ccd4fea8627b479488f9e832",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v0/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_b03fb7f5d5204ba5b51deb79",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja"
+            },
+            "status": "success",
+            "result_excerpt": "📁 .devcontainer\n📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📁 examples\n📄 pyproject.toml\n📁 scripts\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_315368bb70c7413c9b3730d7",
+            "name": "find_files",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja",
+              "type": "py"
+            },
+            "status": "success",
+            "result_excerpt": "docs/conf.py\ndocs/examples/cache_extension.py\ndocs/examples/inline_gettext_extension.py\nexamples/basic/cycle.py\nexamples/basic/debugger.py\nexamples/basic/inheritance.py\nexamples/basic/test.py\nexamples/basic/test_filter_and_linestatements.py\nexamples/basic/test_loop_filter.py\nexamples/basic/translate.py\nscripts/generate_identifier_pattern.py\nsrc/jinja2/__init__.py\nsrc/jinja2/_identifier.py\nsrc/jinja2/async_utils.py\nsrc/jinja2/bccache.py\nsrc/jinja2/compiler.py\nsrc/jinja2/constants.py\nsrc/jinja2/debug.py\nsrc/jinja2/defaults.py\nsrc/jinja2/environment.py\nsrc/jinja2/exceptions.py\nsrc/jinja2/ext.py\nsrc/jinja2/filters.py\nsrc/jinja2/idtracking.py\nsrc/jinja2/lexer.py\nsrc/jinja2/loaders.py\nsrc/jinja2/meta.py\nsrc/jinja2/nativetypes.py\nsrc/jinja2/nodes.py\nsrc/jinja2/optimizer.py\nsrc/jinja2/parser.py\nsrc/jinja2/runtime.py\nsrc/jinja2/sandbox.py\nsrc/jinja2/tests.py\nsrc/jinja2/utils.py\nsrc/jinja2/visitor.py\ntests/conftest.py\ntests/res/__init__.py\ntests/test_api.py\ntests/test_async.py\ntests/test_async_f",
+            "error": null
+          },
+          {
+            "call_id": "call_f789747784904f79a370ef26",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"Jinja2\"\n3| version = \"3.2.0.dev\"\n4| description = \"A very fast and expressive template engine.\"\n5| readme = \"README.md\"\n6| license = \"BSD-3-Clause\"\n7| license-files = [\"LICENSE.txt\"]\n8| maintainers = [{name = \"Pallets\", email = \"contact@palletsprojects.com\"}]\n9| classifiers = [\n10|     \"Development Status :: 5 - Production/Stable\",\n11|     \"Environment :: Web Environment\",\n12|     \"Intended Audience :: Developers\",\n13|     \"Operating System :: OS Independent\",\n14|     \"Programming Language :: Python\",\n15|     \"Topic :: Internet :: WWW/HTTP :: Dynamic Content\",\n16|     \"Topic :: Text Processing :: Markup :: HTML\",\n17|     \"Typing :: Typed\",\n18| ]\n19| requires-python = \">=3.10\"\n20| dependencies = [\"MarkupSafe>=3.0\"]\n21| \n22| [project.urls]\n23| Donate = \"https://palletsprojects.com/donate\"\n24| Documentation = \"https://jinja.palletsprojects.com/\"\n25| Changes = \"https://jinja.palletsprojects.com/page/changes/\"\n26| Source = \"https://github.com/pallets/jinja/\"\n27| Chat",
+            "error": null
+          },
+          {
+            "call_id": "call_e4a6e644fba442d9acd6dc23",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| <div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/jinja/refs/heads/stable/docs/_static/jinja-name.svg\" alt=\"\" height=\"150\"></div>\n2| \n3| # Jinja\n4| \n5| Jinja is a fast, expressive, extensible templating engine. Special\n6| placeholders in the template allow writing code similar to Python\n7| syntax. Then the template is passed data to render the final document.\n8| \n9| It includes:\n10| \n11| -   Template inheritance and inclusion.\n12| -   Define and import macros within templates.\n13| -   HTML templates can use autoescaping to prevent XSS from untrusted\n14|     user input.\n15| -   A sandboxed environment can safely render untrusted templates.\n16| -   AsyncIO support for generating templates and calling async\n17|     functions.\n18| -   I18N support with Babel.\n19| -   Templates are compiled to optimized Python code just-in-time and\n20|     cached, or can be compiled ahead-of-time.\n21| -   Exceptions point to the correct line in templates to make debugging\n22|     ea",
+            "error": null
+          },
+          {
+            "call_id": "call_1b812e03eb98424bbfeb9cf1",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 conftest.py\n📁 res\n📄 test_api.py\n📄 test_async.py\n📄 test_async_filters.py\n📄 test_bytecode_cache.py\n📄 test_compile.py\n📄 test_core_tags.py\n📄 test_debug.py\n📄 test_ext.py\n📄 test_filters.py\n📄 test_idtracking.py\n📄 test_imports.py\n📄 test_inheritance.py\n📄 test_lexnparse.py\n📄 test_loader.py\n📄 test_nativetypes.py\n📄 test_nodes.py\n📄 test_pickle.py\n📄 test_regression.py\n📄 test_runtime.py\n📄 test_security.py\n📄 test_tests.py\n📄 test_utils.py",
+            "error": null
+          },
+          {
+            "call_id": "call_3fc83e3dff4a4799a5397f8e",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/src/jinja2"
+            },
+            "status": "success",
+            "result_excerpt": "📄 __init__.py\n📄 _identifier.py\n📄 async_utils.py\n📄 bccache.py\n📄 compiler.py\n📄 constants.py\n📄 debug.py\n📄 defaults.py\n📄 environment.py\n📄 exceptions.py\n📄 ext.py\n📄 filters.py\n📄 idtracking.py\n📄 lexer.py\n📄 loaders.py\n📄 meta.py\n📄 nativetypes.py\n📄 nodes.py\n📄 optimizer.py\n📄 parser.py\n📄 py.typed\n📄 runtime.py\n📄 sandbox.py\n📄 tests.py\n📄 utils.py\n📄 visitor.py",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 42320,
+          "completion_tokens": 994,
+          "total_tokens": 43314,
+          "provider_tokens": 43314,
+          "cached_tokens": 23296
+        },
+        "latency_seconds": 19.688869499994325,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "jinja": true,
+            "environment": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/jinja2/": true,
+            "tests/": true,
+            "docs/": true,
+            "examples/": true,
+            "scripts/": true,
+            "pyproject.toml": true,
+            "tests/res/": true,
+            "tests/conftest.py": true
+          },
+          "grounded_path_rate": 1.0
+        },
+        "quality_pass": true
+      },
+      "v1": {
+        "version": "v1",
+        "repository": "jinja",
+        "repetition": 1,
+        "content": "## Jinja Repository Analysis\n\n### Repository Purpose\n**Jinja2** is a fast, expressive, extensible templating engine for Python, developed by the Pallets organization. It allows writing template code with Python-like syntax, compiles templates to optimized Python code JIT, and supports features like template inheritance, macros, autoescaping, async/await, sandboxing, and I18N via Babel.\n\n### Package Layout\nThe repository follows a **src-layout** with a single Python package:\n\n- **`src/jinja2/`** — Main package containing 26 modules:\n  - Core engine: `environment.py`, `lexer.py`, `parser.py`, `compiler.py`, `nodes.py`\n  - Runtime: `runtime.py`, `utils.py`, `async_utils.py`\n  - Extensions: `ext.py`, `filters.py`, `tests.py`\n  - Security: `sandbox.py`, `exceptions.py`\n  - Caching: `bccache.py`, `loaders.py`\n  - Type stubs: `py.typed` (package is fully typed)\n\n- **`tests/`** — Test suite with 22 test modules covering API, async, filters, compilation, inheritance, security, and more\n- **`docs/`** — Sphinx documentation with examples\n- **`examples/`** — Basic usage examples\n- **`scripts/`** — Build/utility scripts\n\n### Primary Runtime Path\nThe runtime entry point is `src/jinja2/__init__.py`, with the core execution flow:\n```\nEnvironment → Lexer → Parser → AST (nodes) → Compiler → Python code → Runtime execution\n```\n\nKey modules in the hot path:\n- `environment.py` — Template environment configuration\n- `lexer.py` / `parser.py` — Template parsing\n- `compiler.py` — AST-to-Python compilation\n- `runtime.py` — Template execution runtime\n\n### Test Layout\nTests are organized in `tests/` with **pytest** as the runner (configured in `pyproject.toml`):\n\n| Test File | Coverage Area |\n|-----------|---------------|\n| `test_api.py` | Public API surface |\n| `test_async.py` / `test_async_filters.py` | AsyncIO support |\n| `test_compile.py` | Code generation |\n| `test_core_tags.py` | Template tags |\n| `test_filters.py` | Built-in filters |\n| `test_lexnparse.py` | Lexer/parser |\n| `test_security.py` | Sandbox security |\n| `test_regression.py` | Bug fixes |\n\nTest resources live in `tests/res/`. The suite runs with `pytest -v` and enforces strict warning-as-error behavior.\n\n### Key Evidence\n- Package manifest: `pyproject.toml` (lines 1-20) — declares `Jinja2` v3.2.0.dev, requires Python ≥3.10, depends on `MarkupSafe>=3.0`\n- Source layout: `src/jinja2/` contains 26 `.py` files plus `py.typed`\n- Test configuration: `pyproject.toml` lines 86-90 — `testpaths = [\"tests\"]`, `filterwarnings = [\"error\"]`",
+        "tools_used": [
+          "read_file",
+          "list_dir",
+          "find_files",
+          "read_file",
+          "read_file",
+          "list_dir",
+          "list_dir",
+          "exec"
+        ],
+        "tool_calls": [
+          {
+            "call_id": "call_23a4fdeeb1aa42f1843ad3fb",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/workspace-v1/skills/codebase-survey/SKILL.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| ---\n2| name: codebase-survey\n3| description: \"Survey an existing codebase to understand its structure, scope, architecture, and current state. Trigger on 'deep dive', 'explore this codebase', 'survey the project', 'understand the architecture', 'onboard me to this project', 'walk me through this repo', or 'what are we working with here'. Use before planning or implementing on an unfamiliar or long-neglected codebase.\"\n4| version: 1.1.0\n5| author: Alejandro Del Villar\n6| license: MIT\n7| metadata:\n8|   hermes:\n9|     tags: [codebase-exploration, architecture-review, onboarding, reconnaissance, discovery]\n10|     related_skills: [project-warmup, draft-feature-plan, refactor-safely]\n11| ---\n12| \n13| # Codebase Survey\n14| \n15| Systematically discover what an existing codebase contains, how it's organized, and where the complexity lives. Produces a synthesized report rather than a raw file dump.\n16| \n17| ## When to Use\n18| \n19| - User says: \"do a deep dive of this project\", \"explore this ",
+            "error": null
+          },
+          {
+            "call_id": "call_ee4afc728e6f4a42926faaff",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja"
+            },
+            "status": "success",
+            "result_excerpt": "📁 .devcontainer\n📄 .editorconfig\n📁 .github\n📄 .gitignore\n📄 .pre-commit-config.yaml\n📄 .readthedocs.yaml\n📄 CHANGES.rst\n📄 LICENSE.txt\n📄 README.md\n📁 docs\n📁 examples\n📄 pyproject.toml\n📁 scripts\n📁 src\n📁 tests\n📄 uv.lock",
+            "error": null
+          },
+          {
+            "call_id": "call_ac2ac15ea2f545e08f94d852",
+            "name": "find_files",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja",
+              "type": "py"
+            },
+            "status": "success",
+            "result_excerpt": "docs/conf.py\ndocs/examples/cache_extension.py\ndocs/examples/inline_gettext_extension.py\nexamples/basic/cycle.py\nexamples/basic/debugger.py\nexamples/basic/inheritance.py\nexamples/basic/test.py\nexamples/basic/test_filter_and_linestatements.py\nexamples/basic/test_loop_filter.py\nexamples/basic/translate.py\nscripts/generate_identifier_pattern.py\nsrc/jinja2/__init__.py\nsrc/jinja2/_identifier.py\nsrc/jinja2/async_utils.py\nsrc/jinja2/bccache.py\nsrc/jinja2/compiler.py\nsrc/jinja2/constants.py\nsrc/jinja2/debug.py\nsrc/jinja2/defaults.py\nsrc/jinja2/environment.py\nsrc/jinja2/exceptions.py\nsrc/jinja2/ext.py\nsrc/jinja2/filters.py\nsrc/jinja2/idtracking.py\nsrc/jinja2/lexer.py\nsrc/jinja2/loaders.py\nsrc/jinja2/meta.py\nsrc/jinja2/nativetypes.py\nsrc/jinja2/nodes.py\nsrc/jinja2/optimizer.py\nsrc/jinja2/parser.py\nsrc/jinja2/runtime.py\nsrc/jinja2/sandbox.py\nsrc/jinja2/tests.py\nsrc/jinja2/utils.py\nsrc/jinja2/visitor.py\ntests/conftest.py\ntests/res/__init__.py\ntests/test_api.py\ntests/test_async.py\ntests/test_async_f",
+            "error": null
+          },
+          {
+            "call_id": "call_ca4b5cf179d54570b8816cab",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/pyproject.toml"
+            },
+            "status": "success",
+            "result_excerpt": "1| [project]\n2| name = \"Jinja2\"\n3| version = \"3.2.0.dev\"\n4| description = \"A very fast and expressive template engine.\"\n5| readme = \"README.md\"\n6| license = \"BSD-3-Clause\"\n7| license-files = [\"LICENSE.txt\"]\n8| maintainers = [{name = \"Pallets\", email = \"contact@palletsprojects.com\"}]\n9| classifiers = [\n10|     \"Development Status :: 5 - Production/Stable\",\n11|     \"Environment :: Web Environment\",\n12|     \"Intended Audience :: Developers\",\n13|     \"Operating System :: OS Independent\",\n14|     \"Programming Language :: Python\",\n15|     \"Topic :: Internet :: WWW/HTTP :: Dynamic Content\",\n16|     \"Topic :: Text Processing :: Markup :: HTML\",\n17|     \"Typing :: Typed\",\n18| ]\n19| requires-python = \">=3.10\"\n20| dependencies = [\"MarkupSafe>=3.0\"]\n21| \n22| [project.urls]\n23| Donate = \"https://palletsprojects.com/donate\"\n24| Documentation = \"https://jinja.palletsprojects.com/\"\n25| Changes = \"https://jinja.palletsprojects.com/page/changes/\"\n26| Source = \"https://github.com/pallets/jinja/\"\n27| Chat",
+            "error": null
+          },
+          {
+            "call_id": "call_e0caeb2d038145cb9aa5fd76",
+            "name": "read_file",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/README.md"
+            },
+            "status": "success",
+            "result_excerpt": "1| <div align=\"center\"><img src=\"https://raw.githubusercontent.com/pallets/jinja/refs/heads/stable/docs/_static/jinja-name.svg\" alt=\"\" height=\"150\"></div>\n2| \n3| # Jinja\n4| \n5| Jinja is a fast, expressive, extensible templating engine. Special\n6| placeholders in the template allow writing code similar to Python\n7| syntax. Then the template is passed data to render the final document.\n8| \n9| It includes:\n10| \n11| -   Template inheritance and inclusion.\n12| -   Define and import macros within templates.\n13| -   HTML templates can use autoescaping to prevent XSS from untrusted\n14|     user input.\n15| -   A sandboxed environment can safely render untrusted templates.\n16| -   AsyncIO support for generating templates and calling async\n17|     functions.\n18| -   I18N support with Babel.\n19| -   Templates are compiled to optimized Python code just-in-time and\n20|     cached, or can be compiled ahead-of-time.\n21| -   Exceptions point to the correct line in templates to make debugging\n22|     ea",
+            "error": null
+          },
+          {
+            "call_id": "call_0ec17c7c942c473892832286",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/src/jinja2"
+            },
+            "status": "success",
+            "result_excerpt": "📄 __init__.py\n📄 _identifier.py\n📄 async_utils.py\n📄 bccache.py\n📄 compiler.py\n📄 constants.py\n📄 debug.py\n📄 defaults.py\n📄 environment.py\n📄 exceptions.py\n📄 ext.py\n📄 filters.py\n📄 idtracking.py\n📄 lexer.py\n📄 loaders.py\n📄 meta.py\n📄 nativetypes.py\n📄 nodes.py\n📄 optimizer.py\n📄 parser.py\n📄 py.typed\n📄 runtime.py\n📄 sandbox.py\n📄 tests.py\n📄 utils.py\n📄 visitor.py",
+            "error": null
+          },
+          {
+            "call_id": "call_f335c517a87348dba2ef0c1b",
+            "name": "list_dir",
+            "params": {
+              "path": "/private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja/tests"
+            },
+            "status": "success",
+            "result_excerpt": "📄 conftest.py\n📁 res\n📄 test_api.py\n📄 test_async.py\n📄 test_async_filters.py\n📄 test_bytecode_cache.py\n📄 test_compile.py\n📄 test_core_tags.py\n📄 test_debug.py\n📄 test_ext.py\n📄 test_filters.py\n📄 test_idtracking.py\n📄 test_imports.py\n📄 test_inheritance.py\n📄 test_lexnparse.py\n📄 test_loader.py\n📄 test_nativetypes.py\n📄 test_nodes.py\n📄 test_pickle.py\n📄 test_regression.py\n📄 test_runtime.py\n📄 test_security.py\n📄 test_tests.py\n📄 test_utils.py",
+            "error": null
+          },
+          {
+            "call_id": "call_802456f3cf7a4014a08907c5",
+            "name": "exec",
+            "params": {
+              "command": "cd /private/tmp/nanoevo-paired-codebase-survey-20260804/repositories/jinja && git log --oneline -10 && echo \"---\" && git branch -a"
+            },
+            "status": "success",
+            "result_excerpt": "5ef7011 Merge branch 'stable'\n---\n* (HEAD detached at FETCH_HEAD)\n\n\nExit code: 0",
+            "error": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 42551,
+          "completion_tokens": 1313,
+          "total_tokens": 43864,
+          "provider_tokens": 43864,
+          "cached_tokens": 8448
+        },
+        "latency_seconds": 32.93373454098764,
+        "stop_reason": "completed",
+        "error": null,
+        "metrics": {
+          "required_terms": {
+            "jinja": true,
+            "environment": true,
+            "tests": true
+          },
+          "required_term_recall": 1.0,
+          "cited_paths": {
+            "src/jinja2/": true,
+            "tests/": true,
+            "docs/": true,
+            "examples/": true,
+            "scripts/": true,
+            "src/jinja2/__init__.py": true,
+            "pyproject.toml": true,
+            "tests/res/": true
+          },
+          "grounded_path_rate": 1.0
+        },
+        "quality_pass": true
+      }
+    }
+  ],
+  "summary": {
+    "pairs": 3,
+    "quality_valid_pairs": 2,
+    "quality_valid_rate": 0.6666666666666666,
+    "token_reduction_pct": {
+      "mean": 18.389295490766717,
+      "median": 18.389295490766717,
+      "stdev": 27.80215564041903,
+      "bootstrap_95_ci": [
+        -1.269797294177402,
+        38.048388275710835
+      ],
+      "improved_pairs": 1
+    },
+    "tool_call_reduction_pct": {
+      "mean": 12.087912087912091,
+      "median": 12.087912087912091,
+      "stdev": 37.297940106543166,
+      "bootstrap_95_ci": [
+        -14.285714285714285,
+        38.46153846153847
+      ],
+      "improved_pairs": 1
+    },
+    "paired_delta": {
+      "total_tokens_mean": -12738.5,
+      "tool_calls_mean": -2.0
+    }
+  }
+}

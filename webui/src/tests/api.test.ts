@@ -5,11 +5,14 @@ import {
   completeProviderOAuth,
   createModelConfiguration,
   deleteSession,
+  decideEvolutionProposal,
   fetchFilePreview,
   fetchFilePreviewAvailability,
   fetchAutomations,
   fetchApiService,
   fetchCliApps,
+  fetchEvolutionOverview,
+  fetchEvolutionSkillDetail,
   fetchInstalledCliApps,
   fetchMcpPresets,
   fetchNanobotFeatures,
@@ -26,6 +29,8 @@ import {
   listSlashCommands,
   loginProviderOAuth,
   logoutProviderOAuth,
+  requestEvolutionReview,
+  restoreEvolutionSkill,
   disableNanobotFeature,
   enableNanobotFeature,
   runAutomationAction,
@@ -38,6 +43,7 @@ import {
   pollChannelConnect,
   startChannelConnect,
   updateAutomation,
+  updateEvolutionConfig,
   updateSidebarState,
   updateImageGenerationSettings,
   updateModelConfiguration,
@@ -276,6 +282,87 @@ describe("webui API helpers", () => {
 
     expect(fetch).toHaveBeenCalledWith(
       "/api/webui/skills/current%20web",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer tok" },
+      }),
+    );
+  });
+
+  it("fetches evolution overview and percent-encodes skill detail names", async () => {
+    await fetchEvolutionOverview("tok");
+    await fetchEvolutionSkillDetail("tok", "repo analysis/中文");
+
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/api/webui/evolution",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer tok" },
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "/api/webui/evolution/skills/repo%20analysis%2F%E4%B8%AD%E6%96%87",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer tok" },
+      }),
+    );
+  });
+
+  it("serializes evolution config and review values into an encoded header", async () => {
+    const config = {
+      enabled: true,
+      review_every_n_trajectories: 20,
+      review_model_preset: "free/模型",
+    };
+    await updateEvolutionConfig("tok", config);
+    await requestEvolutionReview("tok", "repo analysis", "优先补充异常处理");
+
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/api/webui/evolution/config/update",
+      expect.objectContaining({
+        headers: {
+          Authorization: "Bearer tok",
+          "X-Nanobot-Evolution-Values": encodeURIComponent(JSON.stringify(config)),
+        },
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "/api/webui/evolution/skills/repo%20analysis/review",
+      expect.objectContaining({
+        headers: {
+          Authorization: "Bearer tok",
+          "X-Nanobot-Evolution-Values": encodeURIComponent(JSON.stringify({
+            feedback: "优先补充异常处理",
+          })),
+        },
+      }),
+    );
+  });
+
+  it("routes proposal decisions and restore actions through protected endpoints", async () => {
+    await decideEvolutionProposal("tok", "proposal 1/2", "approve");
+    await decideEvolutionProposal("tok", "proposal 1/2", "reject");
+    await restoreEvolutionSkill("tok", "repo analysis");
+
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/api/webui/evolution/proposals/proposal%201%2F2/approve",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer tok" },
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "/api/webui/evolution/proposals/proposal%201%2F2/reject",
+      expect.objectContaining({
+        headers: { Authorization: "Bearer tok" },
+      }),
+    );
+    expect(fetch).toHaveBeenNthCalledWith(
+      3,
+      "/api/webui/evolution/skills/repo%20analysis/restore",
       expect.objectContaining({
         headers: { Authorization: "Bearer tok" },
       }),

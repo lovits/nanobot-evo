@@ -1,0 +1,22 @@
+{
+  "repositories": [
+    {
+      "name": "blinker",
+      "url": "https://github.com/pallets-eco/blinker.git",
+      "commit": "c3364059663df1ddce32799d6b1922af89a345f6",
+      "required_terms": ["blinker", "signal", "tests"]
+    },
+    {
+      "name": "flask",
+      "url": "https://github.com/pallets/flask.git",
+      "commit": "6a2f545bfd8ed31e19066a299296917e034aca58",
+      "required_terms": ["flask", "sansio", "tests"]
+    },
+    {
+      "name": "jinja",
+      "url": "https://github.com/pallets/jinja.git",
+      "commit": "5ef70112a1ff19c05324ff889dd30405b1002044",
+      "required_terms": ["jinja", "environment", "tests"]
+    }
+  ]
+}

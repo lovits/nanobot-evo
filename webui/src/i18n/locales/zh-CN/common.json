@@ -757,7 +757,179 @@
       "unavailableReasonLabel": "不可用原因",
       "rawInstructions": "原始 SKILL.md",
       "rawInstructionsEmpty": "没有原始说明。",
-      "detailDescription": "{{name}} 的详情。"
+      "detailDescription": "{{name}} 的详情。",
+      "evolution": {
+        "open": "进化管理",
+        "title": "Skills 进化管理",
+        "description": "基于脱敏后的真实执行证据，持续改进已有 Workspace Skills。",
+        "loading": "正在加载 NanoEvo…",
+        "backToSkills": "返回 Skills 列表",
+        "summary": {
+          "evolvable": "可进化",
+          "protected": "受保护",
+          "pending": "待处理"
+        },
+        "regions": {
+          "list": "Skills 进化列表",
+          "details": "所选 Skill 的进化详情"
+        },
+        "runtime": {
+          "title": "进化运行时",
+          "configEnabled": "配置已开启",
+          "configDisabled": "配置已关闭",
+          "runtimeActive": "运行时已生效",
+          "runtimeInactive": "运行时未生效",
+          "restartRequired": "需要重启",
+          "enableAria": "在配置中启用 Skill 进化",
+          "reviewInterval": "自动复盘策略",
+          "reviewIntervalOption": "每使用 {{count}} 次复盘",
+          "modelPreset": "复盘模型预设",
+          "currentMainModel": "使用当前主模型",
+          "save": "保存配置",
+          "help": "配置会立即保存。安装或移除 NanoEvo 运行时 Hook 需要重启 Gateway。"
+        },
+        "filters": {
+          "all": "全部",
+          "evolvable": "可进化",
+          "pending": "待处理",
+          "aria": "筛选进化 Skills",
+          "noMatch": "没有符合当前筛选条件的 Skill。"
+        },
+        "skillStates": {
+          "protected": "内置 · 受保护",
+          "reviewing": "正在复盘证据",
+          "proposalPending": "{{count}} 个提案待审核",
+          "conflict": "提案发生冲突",
+          "updated": "Skill 已更新",
+          "unavailable": "当前不可用",
+          "collecting": "正在收集 {{count}}/{{threshold}}"
+        },
+        "panel": {
+          "loading": "正在加载 Skill 进化详情…",
+          "select": "请选择一个 Skill 查看其进化状态。"
+        },
+        "tabs": {
+          "overview": "概览",
+          "proposal": "提案",
+          "proposalCount": "提案 {{count}}",
+          "versions": "版本",
+          "versionsCount": "版本 {{count}}",
+          "aria": "Skill 进化内容"
+        },
+        "states": {
+          "protected": "受保护",
+          "collecting": "收集中",
+          "reviewing": "复盘中",
+          "proposal_pending": "待审核",
+          "updated": "已更新",
+          "conflict": "冲突",
+          "unavailable": "不可用"
+        },
+        "protected": {
+          "title": "受保护的内置 Skill",
+          "description": "NanoEvo V1 只改进已有 Workspace Skills，内置 Skills 永久只读。"
+        },
+        "progress": {
+          "title": "自动复盘进度",
+          "remaining": "再积累 {{count}} 条归因轨迹后触发周期复盘",
+          "ready": "已达到周期复盘阈值",
+          "aria": "自动复盘进度"
+        },
+        "review": {
+          "title": "请求复盘",
+          "help": "可选反馈可以帮助 Reviewer 聚焦，但不能绕过策略与人工批准。",
+          "placeholder": "描述一个需要验证的具体 Skill 问题…",
+          "runtimeRequired": "请先启用 NanoEvo 并重启 Gateway。",
+          "evidenceRequired": "至少需要一条已保存的执行轨迹。",
+          "alreadyRunning": "已有复盘正在运行。",
+          "available": "当前有 {{count}} 条近期证据可用。",
+          "feedbackAvailable": "将结合 {{count}} 条近期证据核查这条人工反馈。",
+          "thresholdAvailable": "已达到周期门槛，可立即请求复盘。",
+          "thresholdRequired": "还需 {{count}} 条新归因轨迹达到周期门槛；填写具体反馈可提前请求复盘。",
+          "request": "请求复盘"
+        },
+        "result": {
+          "title": "最近一次复盘",
+          "noChange": "未产生修改",
+          "failed": "复盘失败",
+          "timedOut": "复盘超时",
+          "proposal": "已生成修改提案",
+          "running": "正在复盘",
+          "noChangeReason": "现有证据未能验证可复用的 Skill 缺陷。",
+          "failedReason": "Reviewer 未能完成复盘。",
+          "timedOutReason": "Reviewer 未在限定时间内完成复盘。"
+        },
+        "evidence": {
+          "independentTurns": "独立任务轮次",
+          "independentProjects": "独立项目",
+          "notRequired": "不要求",
+          "recent": "近期脱敏证据",
+          "objectiveFailure": "目标未完成",
+          "completed": "已完成",
+          "metadata": "{{tools}} 次工具调用 · {{errors}} 个错误 · {{date}}",
+          "empty": "该 Skill 尚未保存任何归因轨迹。"
+        },
+        "proposal": {
+          "noneTitle": "暂无待审核提案",
+          "noneDescription": "复盘可以得出无需修改的结论；这里只展示有证据支持的局部修改。",
+          "why": "修改原因",
+          "gates": "证据门禁",
+          "localReplacement": "局部文本替换",
+          "before": "修改前",
+          "after": "修改后",
+          "rejectTitle": "拒绝这个提案？",
+          "rejectDescription": "提案将被标记为已拒绝，Workspace Skill 不会发生变化。",
+          "rejectAction": "拒绝提案",
+          "reject": "拒绝",
+          "approveTitle": "批准并应用这个 Skill 修改？",
+          "approveDescription": "NanoEvo 会重新验证证据和基础哈希，备份当前 SKILL.md，再应用这一次局部替换。",
+          "approveAction": "批准并应用"
+        },
+        "versions": {
+          "current": "当前版本 {{version}}",
+          "unknown": "未知",
+          "description": "NanoEvo 永久保留版本，可比较任意两个版本并安全切换。",
+          "currentLabel": "当前版本",
+          "compareTitle": "版本差异",
+          "baseVersion": "对比基准",
+          "targetVersion": "目标版本",
+          "compareAction": "比较差异",
+          "noDiff": "两个版本没有差异。",
+          "empty": "当前还没有版本备份。批准提案并应用前会自动创建备份。",
+          "switchTitle": "切换到这个 Skill 版本？",
+          "switchDescription": "NanoEvo 会先备份当前内容，再切换到所选版本。",
+          "switchAction": "切换版本"
+        },
+        "gates": {
+          "turns": "{{current}} / {{required}} 个独立任务轮次",
+          "projects": "{{current}} / {{required}} 个独立项目",
+          "projectsNotRequired": "这些轨迹不要求来自独立项目",
+          "feedbackException": "已记录明确的用户反馈例外",
+          "policySatisfied": "已满足确定性证据策略"
+        },
+        "dialogs": {
+          "cancel": "取消"
+        },
+        "messages": {
+          "configSaved": "进化配置已保存；如界面提示，请重启 Gateway。",
+          "reviewRequested": "已请求复盘，证据和状态会在此面板持续更新。",
+          "proposalApplied": "提案已通过验证、备份并应用。",
+          "proposalRejected": "提案已拒绝，Skill 未被修改。",
+          "versionRestored": "已恢复上一版本的 Skill。",
+          "versionSwitched": "已切换 Skill 版本，切换前内容已备份。"
+        },
+        "errors": {
+          "requestFailed": "Skill 进化请求失败。",
+          "unauthorized": "你没有管理 Skill 进化的权限。",
+          "evolution_unavailable": "NanoEvo 尚未运行，请保存配置并重启 Gateway。",
+          "evolution_policy_violation": "该操作已被 Skill 进化安全策略阻止。",
+          "evolution_state_conflict": "Skill 进化状态已发生变化，请刷新后重试。",
+          "evolution_not_found": "找不到请求的 Skill 进化记录。",
+          "invalid_evolution_values": "Skill 进化请求包含无效参数。",
+          "evolution_base_hash_conflict": "提案创建后 SKILL.md 已发生变化，因此没有覆盖该文件。",
+          "evolution_route_not_found": "找不到请求的 Skill 进化接口。"
+        }
+      }
     },
     "voice": {
       "selectProvider": "选择提供商",

@@ -1,0 +1,54 @@
+{
+  "metric": "observed_tool_call_selection_accuracy",
+  "definition": "appropriate observed calls / all observed calls",
+  "scope": "Checks tool family, read-only task contract, file/directory target type, execution success, and exact duplicate calls. It does not measure omitted necessary calls.",
+  "calls": 73,
+  "correct": 72,
+  "accuracy": 0.9863013698630136,
+  "reasons": {
+    "appropriate": 72,
+    "mutating_command_for_read_only_task": 1
+  },
+  "per_source": [
+    {
+      "source": "/private/tmp/nanoevo-codebase-survey-final.ccSQtn/.nanobot/evolution/trajectories.jsonl",
+      "calls": 25,
+      "correct": 25,
+      "accuracy": 1.0,
+      "reasons": {
+        "appropriate": 25
+      }
+    },
+    {
+      "source": "/private/tmp/nanoevo-analyzer-final.vKC3zt/.nanobot/evolution/trajectories.jsonl",
+      "calls": 19,
+      "correct": 19,
+      "accuracy": 1.0,
+      "reasons": {
+        "appropriate": 19
+      }
+    },
+    {
+      "source": "/private/tmp/nanoevo-source-code-analysis.OK8Mmc/.nanobot/evolution/trajectories.jsonl",
+      "calls": 29,
+      "correct": 28,
+      "accuracy": 0.9655172413793104,
+      "reasons": {
+        "appropriate": 28,
+        "mutating_command_for_read_only_task": 1
+      }
+    }
+  ],
+  "failures": [
+    {
+      "source": "/private/tmp/nanoevo-source-code-analysis.OK8Mmc/.nanobot/evolution/trajectories.jsonl",
+      "line": 1,
+      "trace_id": "tr_2ef25337b56047a4853cd6e691addc13",
+      "tool": "exec",
+      "params": {
+        "cmd": "cd /private/tmp/nanoevo-source-code-analysis.OK8Mmc/repositories/itsdangerous && pip install -e . 2>&1 | tail -5"
+      },
+      "reason": "mutating_command_for_read_only_task"
+    }
+  ]
+}

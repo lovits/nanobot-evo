@@ -6,7 +6,7 @@ import asyncio
 import dataclasses
 import os
 import time
-from collections.abc import Mapping
+from collections.abc import Coroutine, Mapping
 from contextlib import AbstractContextManager, ExitStack, nullcontext, suppress
 from dataclasses import dataclass, field
 from enum import Enum, auto
@@ -479,7 +479,7 @@ class AgentLoop:
             config,
             provider_snapshot_loader,
         )
-        return cls(
+        loop = cls(
             bus=bus,
             provider=provider,
             workspace=config.workspace_path,
@@ -508,6 +508,10 @@ class AgentLoop:
             preset_snapshot_loader=preset_snapshot_loader,
             **extra,
         )
+        from nanobot.evolution.bootstrap import install_skill_evolution
+
+        install_skill_evolution(loop, getattr(config, "evolution", None))
+        return loop
 
     def _sync_subagent_runtime_limits(self) -> None:
         """Keep subagent runtime limits aligned with mutable loop settings."""
@@ -621,6 +625,18 @@ class AgentLoop:
         """Register a provider resolved once before each inbound model turn."""
         if provider not in self._runtime_context_providers:
             self._runtime_context_providers.append(provider)
+
+    def register_hook_factory(self, factory: AgentTurnHookFactory) -> None:
+        """Register an idempotent per-turn extension hook factory."""
+        if factory not in self._hook_factories:
+            self._hook_factories.append(factory)
+
+    def schedule_background(
+        self,
+        coro: Coroutine[Any, Any, Any],
+    ) -> None:
+        """Schedule extension work using the loop's tracked shutdown boundary."""
+        self._schedule_background(coro)
 
     def _runtime_events(self) -> RuntimeEventPublisher:
         return ensure_runtime_event_publisher(self)

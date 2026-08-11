@@ -1,0 +1,39 @@
+{
+  "experience": [
+    {
+      "name": "itsdangerous",
+      "url": "https://github.com/pallets/itsdangerous.git",
+      "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "required_terms": [
+        "pyproject.toml",
+        "itsdangerous",
+        "src/itsdangerous",
+        "tests/test_itsdangerous"
+      ]
+    },
+    {
+      "name": "click",
+      "url": "https://github.com/pallets/click.git",
+      "commit": "00e592cea702e0b2caa0dee42489fdb1c22cd845",
+      "required_terms": [
+        "pyproject.toml",
+        "click",
+        "src/click",
+        "tests"
+      ]
+    }
+  ],
+  "held_out": {
+    "name": "markupsafe",
+    "url": "https://github.com/pallets/markupsafe.git",
+    "commit": "b2e4d9c7687be25695fffbe93a37622302b24fb1",
+    "required_terms": [
+      "pyproject.toml",
+      "setup.py",
+      "markupsafe",
+      "src/markupsafe",
+      "tests",
+      "src/markupsafe/_speedups.c"
+    ]
+  }
+}

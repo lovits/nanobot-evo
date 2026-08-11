@@ -33,7 +33,7 @@ export function parseRenderableFileDiff(diff: UIFileDiff): RenderableFileDiff {
   return { hunks: [] };
 }
 
-function parseUnifiedDiffText(text: string): RenderableFileDiff {
+export function parseUnifiedDiffText(text: string): RenderableFileDiff {
   let files: ReturnType<typeof parsePatch>;
   try {
     files = parsePatch(text);

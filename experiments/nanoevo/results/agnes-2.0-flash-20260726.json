@@ -1,0 +1,455 @@
+{
+  "started_at": "2026-07-26T09:35:08.211420+00:00",
+  "model": "agnes-2.0-flash",
+  "review_model_preset": null,
+  "manifest": {
+    "experience": [
+      {
+        "name": "itsdangerous",
+        "url": "https://github.com/pallets/itsdangerous.git",
+        "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+        "required_terms": [
+          "pyproject.toml",
+          "itsdangerous",
+          "src/itsdangerous",
+          "tests/test_itsdangerous"
+        ]
+      },
+      {
+        "name": "click",
+        "url": "https://github.com/pallets/click.git",
+        "commit": "00e592cea702e0b2caa0dee42489fdb1c22cd845",
+        "required_terms": [
+          "pyproject.toml",
+          "click",
+          "src/click",
+          "tests"
+        ]
+      }
+    ],
+    "held_out": {
+      "name": "markupsafe",
+      "url": "https://github.com/pallets/markupsafe.git",
+      "commit": "b2e4d9c7687be25695fffbe93a37622302b24fb1",
+      "required_terms": [
+        "pyproject.toml",
+        "setup.py",
+        "markupsafe",
+        "src/markupsafe",
+        "tests",
+        "src/markupsafe/_speedups.c"
+      ]
+    }
+  },
+  "baseline": {
+    "phase": "baseline-held-out",
+    "repository": "markupsafe",
+    "commit": "b2e4d9c7687be25695fffbe93a37622302b24fb1",
+    "content": "Here is the full analysis of the **MarkupSafe** repository.\n\n---\n\n## 1. Purpose\n\nMarkupSafe implements a text object (`Markup`) that escapes characters so strings are safe to embed in HTML and XML documents. It mitigates cross-site scripting (XSS) / injection attacks by replacing `&`, `<`, `>`, `'`, and `\"` with their HTML-entity equivalents (`&amp;`, `&lt;`, `&gt;`, `&#39;`, `&#34;`). It is developed and maintained by the **Pallets** organization (the same group behind Flask, Jinja2, Click, etc.).\n\n---\n\n## 2. Packaging Metadata & Entry Points\n\n| Aspect | Detail | Source |\n|---|---|---|\n| **Distribution name** | `MarkupSafe` | `pyproject.toml:2` |\n| **Version** | `3.1.0.dev` | `pyproject.toml:3` |\n| **Python requirement** | `>=3.10` | `pyproject.toml:19` |\n| **License** | BSD-3-Clause | `pyproject.toml:6` |\n| **Build backend** | `setuptools>=77` via `setuptools.build_meta` | `pyproject.toml:59-61` |\n| **Source layout** | `src/` layout — package lives under `src/markupsafe/` | `list_dir src/` |\n| **C extension** | `markupsafe._speedups` compiled from C source | `setup.py:12` |\n| **Fallback** | Pure-Python `_native._escape_inner` used when C extension fails or on PyPy/Jython/GraalVM | `__init__.py:7-10`, `setup.py:54-58` |\n| **Typing** | PEP 561 — `py.typed` marker present + stub file for C extension | `src/markupsafe/py.typed`, `src/markupsafe/_speedups.pyi` |\n| **Entry points** | None declared (no console scripts or plugin hooks). The package is imported directly. | `pyproject.toml` has no `[project.scripts]` or `[project.entry-points]` |\n\nThe `setup.py` is a legacy shim that conditionally builds the C extension. During CI wheel builds (`CIBUILDWHEEL=1`) it always attempts compilation. On normal installs it falls back gracefully if the C compiler is unavailable. Non-CPython implementations (PyPy, Jython, GraalVM) skip the C extension entirely (`setup.py:54-58`).\n\n---\n\n## 3. Module Architecture\n\n### Package structure\n\n```\nsrc/markupsafe/\n├── __init__.py          # Public API: Markup, escape, escape_silent, soft_str, EscapeFormatter, _MarkupEscapeHelper\n├── _native.py           # Pure-Python fallback for _escape_inner\n├── _speedups.c          # C extension for fast HTML escaping\n├── _speedups.pyi        # Type stub for the C extension\n└── py.typed             # PEP 561 marker\n```\n\n### Public API (`src/markupsafe/__init__.py`)\n\n| Symbol | Role |\n|---|---|\n| **`Markup`** | A `str` subclass whose constructor calls `__html__()` on objects if present. Overrides nearly every string method (`+`, `%`, `.format()`, `.join()`, `.split()`, `.replace()`, etc.) to auto-escape arguments and return `Markup` instances. Implements `__html__()` returning `self`. |\n| **`escape(s)`** | Converts an object to a string and escapes special HTML characters. Fast-paths on `type(s) is str` and objects with `__html__()`. |\n| **`escape_silent(s)`** | Like `escape()` but treats `None` as the empty string. |\n| **`soft_str(s)`** | Converts to string without double-escaping `Markup` objects. |\n| **`EscapeFormatter`** | Custom `string.Formatter` subclass used by `Markup.format()` and `Markup.format_map()` to auto-escape format fields. |\n| **`_MarkupEscapeHelper`** | Lazy-escape wrapper used during `%` interpolation so values are escaped only when converted to string. |\n\n### Internal modules\n\n- **`_native._escape_inner(s)`** (`src/markupsafe/_native.py`): Pure-Python chain of `.replace()` calls — the reference implementation.\n- **`_speedups._escape_inner(s)`** (`src/markupsafe/_speedups.c`): C-level implementation that operates directly on Unicode buffer data (UCS1/UCS2/UCS4), computing output size upfront (`GET_DELTA` macro) then doing a single pass (`DO_ESCAPE` macro). Returns the original string unchanged if no escaping is needed (ref-count optimization at lines 84-87, 110-113, 136-139). Uses multi-phase init slots for free-threading support (`Py_mod_multiple_interpreters`, `Py_mod_gil`) — see `src/markupsafe/_speedups.c:178-186`.\n\n### Runtime flow\n\n1. Import `markupsafe` → `__init__.py` tries `from ._speedups import _escape_inner`; if that fails, falls back to `from ._native import _escape_inner`.\n2. `escape(obj)` → if `obj` is a plain `str`, calls `_escape_inner(obj)` directly (fast path). If `obj` has `__html__()`, calls it first. Otherwise converts to `str` then escapes.\n3. `Markup` operations delegate to `EscapeFormatter.vformat()` for `.format()` or wrap values in `_MarkupEscapeHelper` for `%` interpolation, ensuring all interpolated content is escaped before string conversion.\n\n---\n\n## 4. Test Layout\n\nTests live in `tests/`:\n\n| File | Coverage |\n|---|---|\n| **`test_markupsafe.py`** | Core behavior: string concatenation, `%` interpolation (tuple/dict/single-value), type preservation, `__html__` protocol, `unescape()`, `striptags()`, `.format()` / `.format_map()`, custom formatting protocols (`__html_format__`), `escape_silent`, split/join/mul, `soft_str`. |\n| **`test_escape.py`** | Parameterized escape correctness across ASCII, 2-byte UTF-8 (Japanese), and 4-byte UTF-8 (emoji). Tests proxy objects that fake `__class__` and `str` subclasses that override `__str__`. |\n| **`test_exception_custom_html.py`** | Verifies exceptions raised inside user-defined `__html__()` methods propagate correctly (regression test for GitHub issue #108). |\n| **`test_leak.py`** | Memory-leak regression test using `gc.get_objects()` after 20 × 1000 escape cycles. Marked `thread_unsafe`. |\n| **`test_ext_init.py`** | Validates the C extension uses multi-phase module init (uncached imports produce distinct module objects). Skipped if speedups unavailable. |\n| **`conftest.py`** | Session-scoped autouse fixture (`_mod`) that swaps `markupsafe._escape_inner` between the native Python and C extension implementations, causing every test to run twice (once per backend). Reports free-threading status in pytest header. |\n\nKey testing characteristics:\n- **Dual-backend coverage**: Every test runs against both `_native` and `_speedups` via the `conftest.py` fixture.\n- **Strict warnings**: `filterwarnings = [\"error\"]` in `pyproject.toml:68-70` turns all warnings into errors.\n- **Thread safety markers**: Tests touching `gc` or `sys.modules` are marked `thread_unsafe` for use with `pytest-run-parallel`.\n- **Coverage**: Configured for branch coverage over both `markupsafe` and `tests` (`pyproject.toml:75-77`).\n- **Type checking**: Both `mypy` (strict mode) and `pyright` configured against `src/` and `tests/` (`pyproject.toml:89-99`).\n\n---\n\n## 5. Important Risks\n\n1. **C extension portability** (`setup.py:19-37`, `src/markupsafe/_speedups.c`): The build system allows compilation to fail silently and fall back to pure Python. However, the C code uses `PyUnicode_READY(s)` which was removed in Python 3.12 (`src/markupsafe/_speedups.c:158`). This means the C extension will not compile on Python 3.12+ unless this check is guarded or removed — a latent compatibility bug.\n\n2. **No entry points / console scripts**: The package has zero `[project.scripts]` or plugin registration. All usage is through direct import. This is fine for a library but means there are no CLI tools to discover.\n\n3. **`striptags()` regex-free approach** (`src/markupsafe/__init__.py:206-228`): Uses iterative `find()` loops rather than regex. This avoids catastrophic backtracking but can be slow on deeply nested markup. Also, unclosed tags cause early termination (e.g., `<em>` without `</em>` leaves content behind).\n\n4. **`_MarkupEscapeHelper` coercion** (`src/markupsafe/__init__.py:375-379`): The helper implements `__int__` and `__float__` which means a `Markup` interpolation like `\"%i\" % \"<script>\"` would convert the escaped string `&lt;script&gt;` to an integer — potentially surprising behavior, though it works as intended for numeric format specifiers.\n\n5. **Memory leak test fragility** (`tests/test_leak.py:10-11`): The test is marked `thread_unsafe` because it calls `gc.get_objects()`. On Python 3.13+ with JIT, the GC may stabilize at different counts, so the assertion `len(counts) < 3` could be flaky.\n\n6. **Free-threading support is partial** (`src/markupsafe/_speedups.c:179-184`): The C extension declares `Py_MOD_PER_INTERPRETER_GIL_SUPPORTED` and `Py_MOD_GIL_NOT_USED` slots conditionally based on Python version macros. This is correct for 3.12+ and 3.13+ respectively, but the module has `m_size = 0` (module-stateless), which is appropriate for GIL-not-used mode.\n\n7. **Dependence on setuptools build backend**: Despite using `pyproject.toml`, the build still relies on `setuptools` with a custom `setup.py` for the C extension rather than a more modern approach like `meson-python` or `scikit-build-core`. This adds maintenance burden for the build system.",
+    "tools_used": [
+      "read_file",
+      "list_dir",
+      "list_dir",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "list_dir",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file"
+    ],
+    "usage": {
+      "prompt_tokens": 141870,
+      "completion_tokens": 3491,
+      "total_tokens": 145361,
+      "provider_tokens": 145361,
+      "cached_tokens": 61952
+    },
+    "stop_reason": "completed",
+    "error": null,
+    "metrics": {
+      "required_terms": {
+        "pyproject.toml": true,
+        "setup.py": true,
+        "markupsafe": true,
+        "src/markupsafe": true,
+        "tests": true,
+        "src/markupsafe/_speedups.c": true
+      },
+      "required_term_recall": 1.0,
+      "cited_paths": {
+        "pyproject.toml:2": true,
+        "pyproject.toml:3": true,
+        "pyproject.toml:19": true,
+        "pyproject.toml:6": true,
+        "pyproject.toml:59-61": true,
+        "src/": true,
+        "src/markupsafe/": true,
+        "setup.py:12": true,
+        "__init__.py:7-10": false,
+        "setup.py:54-58": true,
+        "src/markupsafe/py.typed": true,
+        "src/markupsafe/_speedups.pyi": true,
+        "pyproject.toml": true,
+        "setup.py": true,
+        "src/markupsafe/__init__.py": true,
+        "src/markupsafe/_native.py": true,
+        "src/markupsafe/_speedups.c": true,
+        "src/markupsafe/_speedups.c:178-186": true,
+        "__init__.py": false,
+        "tests/": true,
+        "test_markupsafe.py": false,
+        "test_escape.py": false,
+        "test_exception_custom_html.py": false,
+        "test_leak.py": false,
+        "test_ext_init.py": false,
+        "conftest.py": false,
+        "pyproject.toml:68-70": true,
+        "tests": true,
+        "pyproject.toml:75-77": true,
+        "pyproject.toml:89-99": true,
+        "setup.py:19-37": true,
+        "src/markupsafe/_speedups.c:158": true,
+        "src/markupsafe/__init__.py:206-228": true,
+        "src/markupsafe/__init__.py:375-379": true,
+        "tests/test_leak.py:10-11": true,
+        "src/markupsafe/_speedups.c:179-184": true
+      },
+      "grounded_path_rate": 0.7777777777777778
+    }
+  },
+  "experience": [
+    {
+      "phase": "experience",
+      "repository": "itsdangerous",
+      "commit": "672971d66a2ef9f85151e53283113f33d642dabd",
+      "content": "Now I have all the evidence needed. Here is the full analysis:\n\n---\n\n## ItsDangerous Repository Analysis\n\n### 1. Purpose\n\n**ItsDangerous** is a Pallets-maintained Python library whose single job is to **safely pass data to untrusted environments and back**. It does this by cryptographically signing serialized data so that any tampering can be detected. The canonical use case is generating signed tokens (e.g., for password-reset links, session cookies, or CSRF tokens) that can be transmitted over untrusted channels like URLs or HTTP headers.\n\nFrom `README.md`: *\"Various helpers to pass data to untrusted environments and to get it back safe and sound. Data is cryptographically signed to ensure that a token has not been tampered with.\"*\n\n---\n\n### 2. Packaging Metadata & Entry Points\n\n| Aspect | Detail | Source |\n|---|---|---|\n| **Package name** | `itsdangerous` | `pyproject.toml` line 2 |\n| **Version** | `2.3.0.dev` | `pyproject.toml` line 3 |\n| **Build system** | `flit_core<4` | `pyproject.toml` lines 56–58 |\n| **Source layout** | Src-layout: `src/itsdangerous/` | `pyproject.toml` line 61 (`[tool.flit.module]`) |\n| **Python requirement** | `>=3.10` | `pyproject.toml` line 16 |\n| **License** | BSD-3-Clause | `pyproject.toml` line 6 |\n| **Maintainer** | Pallets (`contact@palletsprojects.com`) | `pyproject.toml` line 8 |\n| **Typed** | Yes — `py.typed` marker present | `src/itsdangerous/py.typed` |\n| **No external runtime deps** | Only stdlib (`hashlib`, `hmac`, `json`, `base64`, `zlib`, `struct`, `time`, `datetime`) | All source modules |\n\n**Public API entry points** (all re-exported from `src/itsdangerous/__init__.py`):\n\n| Symbol | Module | Role |\n|---|---|---|\n| `Signer` | `signer.py` | Core HMAC-based byte signer |\n| `HMACAlgorithm` / `NoneAlgorithm` | `signer.py` | Pluggable signature algorithms |\n| `Serializer` | `serializer.py` | Generic serialize → sign wrapper (default: JSON) |\n| `TimestampSigner` | `timed.py` | Signer with embedded UTC timestamp |\n| `TimedSerializer` | `timed.py` | Serializer using `TimestampSigner` |\n| `URLSafeSerializer` | `url_safe.py` | URL-safe base64 + optional zlib compression |\n| `URLSafeTimedSerializer` | `url_safe.py` | URL-safe + timed |\n| `base64_encode` / `base64_decode` / `want_bytes` | `encoding.py` | Low-level encoding utilities |\n| `BadData`, `BadSignature`, `BadHeader`, `BadPayload`, `BadTimeSignature`, `SignatureExpired` | `exc.py` | Exception hierarchy |\n\nThere are **no console scripts or entry-point binaries** defined in `pyproject.toml`. This is purely a library package.\n\n---\n\n### 3. Module Architecture\n\nThe package follows a clean **layered inheritance model**:\n\n```\nsrc/itsdangerous/\n├── __init__.py          # Public API re-exports (17 lines)\n├── py.typed             # PEP 561 marker for type checkers\n├── _json.py             # _CompactJSON – whitespace-stripping JSON wrapper\n├── encoding.py          # want_bytes, base64 (URL-safe), int↔bytes helpers\n├── exc.py               # Exception class hierarchy (BadData → BadSignature → BadTimeSignature → SignatureExpired)\n├── signer.py            # SigningAlgorithm, HMACAlgorithm, NoneAlgorithm, Signer\n├── serializer.py        # Serializer (wraps Signer + pluggable data serializer)\n├── timed.py             # TimestampSigner (extends Signer), TimedSerializer (extends Serializer)\n└── url_safe.py          # URLSafeSerializerMixin, URLSafeSerializer, URLSafeTimedSerializer\n```\n\n**Key design patterns:**\n\n1. **Algorithm abstraction** (`signer.py`): `SigningAlgorithm` is a protocol/base class. `HMACAlgorithm` uses HMAC-SHA1 by default (lazily imported via `_lazy_sha1` to avoid FIPS-mode failures). `NoneAlgorithm` produces empty signatures.\n\n2. **Key rotation** (`signer.py` line 67–73, `serializer.py` line 208): `secret_key` accepts a list of keys (oldest→newest). Signing always uses the newest; verification tries all keys in reverse order.\n\n3. **Composable mixins** (`url_safe.py`): `URLSafeSerializerMixin` overrides `dump_payload`/`load_payload` to add zlib compression and URL-safe base64 encoding. It is mixed into both `Serializer` and `TimedSerializer` via multiple inheritance.\n\n4. **Lazy SHA-1 import** (`signer.py` lines 40–45): `_lazy_sha1()` defers `hashlib.sha1` access until runtime, avoiding import-time crashes on FIPS-enabled Python builds.\n\n5. **Type safety**: Full PEP 484 stubs with `from __future__ import annotations`, `Generic[_TSerialized]`, overloaded `__init__` signatures, and a `py.typed` marker.\n\n---\n\n### 4. Test Layout\n\nTests live in `tests/test_itsdangerous/` with one module per public component:\n\n| File | What it tests |\n|---|---|\n| `test_encoding.py` | `want_bytes`, `base64_encode/decode`, `int_to_bytes/bytes_to_int` |\n| `test_signer.py` | `Signer`, `HMACAlgorithm`, `NoneAlgorithm`, key derivation modes, digest methods, invalid separators |\n| `test_serializer.py` | `Serializer` round-trips, tamper detection, `loads_unsafe`, file I/O (`dump`/`load`), salt isolation, fallback signers, pickle serializer support |\n| `test_timed.py` | `TimestampSigner` max-age expiry, timestamp return, malformed timestamps, future timestamps; inherits `TestSigner` |\n| `test_url_safe.py` | URL-safe serialization round-trips, zlib compression path; inherits `TestSerializer` and `TestTimedSerializer` |\n\n**Test infrastructure** (`pyproject.toml`):\n- `pytest` with `filterwarnings = [\"error\"]` (line 80–82) — warnings are treated as failures.\n- `freezegun` used for deterministic time testing in `test_timed.py`.\n- Coverage configured for branch coverage on `src/` (note: `coverage.paths` references `\"jinja2\"` on line 86 which appears to be a copy-paste artifact from another Pallets project).\n\n**Inheritance-based test reuse**: `test_timed.py` imports and extends `TestSigner` and `TestSerializer`; `test_url_safe.py` imports and extends both. This avoids duplication but creates tight coupling between test files.\n\n---\n\n### 5. Important Risks & Observations\n\n1. **Default digest is SHA-1** (`signer.py` line 54, 120): The default `digest_method` is `hashlib.sha1`. While HMAC-SHA1 is still considered secure against forgery when used properly (the hash is not directly exposed), SHA-1 is deprecated for collision resistance. Users should be aware and may want to override with SHA-256.\n\n2. **FIPS-lazy import is correct but subtle** (`signer.py` lines 40–45): `_lazy_sha1` avoids import-time failure on FIPS systems, but the comment says \"FIPS builds may not include SHA-1\" — this is actually about FIPS *mode* rejecting SHA-1 at the cryptographic level, not the import. The lazy approach works, but if a user never configures an alternative, calls to `get_signature` will fail at runtime on strict FIPS systems.\n\n3. **`loads_unsafe` is dangerous** (`serializer.py` lines 349–365): The docstring explicitly warns this is for debugging only and must not be used with pickle serializers. A user calling `loads_unsafe` with a custom serializer (e.g., `pickle`) could trigger arbitrary code execution.\n\n4. **Coverage config typo** (`pyproject.toml` line 86): `[tool.coverage.run] source = [\"jinja2\", \"tests\"]` references `\"jinja2\"` instead of `\"itsdangerous\"`. This means coverage would miss the actual package source entirely.\n\n5. **Fallback signer removed in 2.0** (`serializer.py` lines 78–80): The SHA-512 fallback was intentionally removed. Users upgrading from 1.x who signed with SHA-512 will need to configure `fallback_signers` manually, or their old tokens will fail to verify.\n\n6. **No external dependencies** — this is a strength. The entire runtime dependency graph is the Python standard library, making it suitable for embedding in minimal environments.\n\n7. **Test inheritance couples test modules** (`test_url_safe.py` line 21): `TestURLSafeTimedSerializer` inherits from both `TestURLSafeSerializer` and `TestTimedSerializer`, which itself inherits from `TestSigner`. This means URL-safe timed serializer tests run all signer, serializer, timed, and URL-safe tests — which is intentional but makes the test dependency graph harder to reason about.",
+      "tools_used": [
+        "read_file",
+        "list_dir",
+        "read_file",
+        "read_file",
+        "list_dir",
+        "list_dir",
+        "list_dir",
+        "read_file",
+        "list_dir",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file"
+      ],
+      "usage": {
+        "prompt_tokens": 145468,
+        "completion_tokens": 3729,
+        "total_tokens": 149197,
+        "provider_tokens": 149197,
+        "cached_tokens": 45568
+      },
+      "stop_reason": "completed",
+      "error": null,
+      "metrics": {
+        "required_terms": {
+          "pyproject.toml": true,
+          "itsdangerous": true,
+          "src/itsdangerous": true,
+          "tests/test_itsdangerous": true
+        },
+        "required_term_recall": 1.0,
+        "cited_paths": {
+          "README.md": true,
+          "pyproject.toml": true,
+          "src/itsdangerous/": true,
+          "src/itsdangerous/py.typed": true,
+          "src/itsdangerous/__init__.py": true,
+          "signer.py": false,
+          "serializer.py": false,
+          "timed.py": false,
+          "url_safe.py": false,
+          "encoding.py": false,
+          "exc.py": false,
+          "tests/test_itsdangerous/": true,
+          "test_encoding.py": false,
+          "test_signer.py": false,
+          "test_serializer.py": false,
+          "test_timed.py": false,
+          "test_url_safe.py": false,
+          "src/": true
+        },
+        "grounded_path_rate": 0.3888888888888889
+      }
+    },
+    {
+      "phase": "experience",
+      "repository": "click",
+      "commit": "00e592cea702e0b2caa0dee42489fdb1c22cd845",
+      "content": "Now I have a thorough understanding of the repository. Here is the complete analysis:\n\n---\n\n## Click 8.5.0.dev — Repository Analysis\n\n### Purpose\n\n**Click** is the \"Command Line Interface Creation Kit\" — a Python package by [Pallets](https://palletsprojects.com/) for creating beautiful, composable command-line interfaces with minimal code. It is one of the most widely used Python CLI libraries, powering tools like Flask's CLI, pip's entry points, and many others. The current version is `8.5.0.dev` (development pre-release).\n\n---\n\n### Module Architecture\n\nThe source lives in `src/click/` and consists of 16 modules organized into clear responsibilities:\n\n| Module | Role |\n|---|---|\n| **`core.py`** (~3792 lines) | The heart of Click. Defines `Context`, `Command`, `Group`, `CommandCollection`, `Parameter`, `Option`, and `Argument`. Contains the full CLI parsing → dispatch → callback invocation runtime flow. |\n| **`decorators.py`** (~627 lines) | High-level decorator API (`@command`, `@group`, `@option`, `@argument`, `@pass_context`, `@pass_obj`, `@make_pass_decorator`, `@version_option`, `@help_option`, `@confirmation_option`, `@password_option`, `@custom_version_option`). These are the primary user-facing entry points. |\n| **`types.py`** (~1422 lines) | Type system. Abstract base `ParamType` plus concrete types: `STRING`, `INT`, `FLOAT`, `BOOL`, `UUID`, `Choice`, `DateTime`, `IntRange`, `FloatRange`, `File`, `Path`, `Tuple`, `UNPROCESSED`, `FuncParamType`. Handles validation, conversion, and shell completion hints. |\n| **`parser.py`** (~533 lines) | Low-level argument parser built on a subset of stdlib `optparse`. Handles tokenization, option/argument splitting, and produces `(opts, args, param_order)` for `core.py` to process. |\n| **`termui.py`** (~1003 lines) | Terminal UI helpers: `prompt()`, `confirm()`, `progressbar`, `pause`, `echo_via_pager`, `edit`, `launch`, `style()`/`unstyle()` for ANSI coloring. |\n| **`utils.py`** (~688 lines) | General utilities: `echo()`, `format_filename()`, `open_file()`, `_LazyFile`, `get_app_dir()`, string conversion, file stream handling. |\n| **`exceptions.py`** (~378 lines) | Exception hierarchy: `ClickException` (base), `UsageError`, `BadParameter`, `BadOptionUsage`, `BadArgumentUsage`, `MissingParameter`, `NoSuchOption`, `NoSuchCommand`, `FileError`, `Abort`, `Exit`, `ClickException`. All have human-readable `.show()` methods. |\n| **`shell_completion.py`** (~801 lines) | Tab-completion support for Bash, Zsh, and Fish. Provides `CompletionItem`, `ShellComplete`, `BashComplete`, `ZshComplete`, `FishComplete`, `PowerShellComplete` classes, and the `shell_complete()` entry function. |\n| **`testing.py`** (~798 lines) | Test harness: `CliRunner` class that captures stdin/stdout/stderr, supports both `\"sys\"` and `\"fd\"` capture modes (on POSIX), provides `invoke()`, `format_result()`, and exception info extraction. |\n| **`formatting.py`** (~320 lines) | Help text formatting: `HelpFormatter`, `wrap_text()` with intelligent paragraph handling, `join_options()`, table measurement for help output. |\n| **`globals.py`** | Thread-local context stack management: `get_current_context()`, `push_context()`, `pop_context()`. |\n| **`_compat.py`** | Cross-platform compatibility: Windows detection, binary/text stream resolution, ANSI stripping, terminal size detection. |\n| **`_termui_impl.py`** | Internal terminal UI implementation details (progress bar rendering, pager spawning). |\n| **`_textwrap.py`** | Custom text wrapping utilities. |\n| **`_utils.py`** | Internal utilities: `UNSET` sentinel, `FLAG_NEEDS_VALUE`, `isattr()`, type introspection helpers. |\n| **`_winconsole.py`** | Windows console input/output handling. |\n\n---\n\n### Public Entry Points (from `__init__.py`)\n\nThe package exports ~70+ symbols across four categories:\n\n1. **Core classes**: `Command`, `Group`, `CommandCollection`, `Context`, `Parameter`, `Option`, `Argument`, `ParameterSource`, `HelpFormatter`\n2. **Decorators**: `@command`, `@group`, `@option`, `@argument`, `@pass_context`, `@pass_obj`, `@make_pass_decorator`, `@version_option`, `@help_option`, `@confirmation_option`, `@password_option`, `@custom_version_option`\n3. **Terminal UI**: `echo`, `prompt`, `confirm`, `pause`, `progressbar`, `style`, `unstyle`, `clear`, `edit`, `launch`, `echo_via_pager`\n4. **Types**: `STRING`, `INT`, `FLOAT`, `BOOL`, `UUID`, `Choice`, `DateTime`, `IntRange`, `FloatRange`, `File`, `Path`, `Tuple`, `UNPROCESSED`\n5. **Testing**: `CliRunner` (via `click.testing`)\n6. **Exceptions**: All `ClickException` subclasses\n\n---\n\n### Runtime Flow\n\nThe execution flow for a Click CLI program follows this path:\n\n```\ncli.main(args)\n  → make_context(info_name, args)        # Parse CLI arguments\n    → make_parser(ctx)                    # Build _OptionParser\n    → parser.parse_args()                 # Tokenize & split options/args\n    → param.handle_parse_result()         # Type-cast, validate, callback each param\n    → Context created with ctx.params\n  → command.invoke(ctx)                   # Dispatch to callback\n    → For Groups: resolve_command() → sub_ctx.invoke()\n    → Result callback (if chain/result_callback set)\n  → standalone_mode handles exceptions → sys.exit()\n```\n\nKey design patterns:\n- **Context hierarchy**: Nested `Context` objects form a tree mirroring the command group structure. Parent contexts propagate settings (`auto_envvar_prefix`, `terminal_width`, etc.) to children.\n- **Thread-local globals**: `get_current_context()` accesses a thread-local stack (`globals._local.stack`) for implicit context access from anywhere.\n- **Value precedence**: Command line > environment variable > default map > parameter default (see `Parameter.consume_value()` at `core.py:2474`).\n- **Eager vs lazy parameters**: Eager parameters (like `--version`) are processed first via `iter_params_for_processing()`.\n- **Chain mode**: Groups can accept multiple subcommands sequentially (`chain=True`), collecting results into a list.\n\n---\n\n### Test Suite\n\nLocated in `tests/` with 22 test files covering:\n\n| Test File | Coverage |\n|---|---|\n| `test_basic.py` | Core command execution, help option collision safety |\n| `test_options.py` | (~3551 lines) Extensive option testing: prefixes, deprecation, prompts, flags, counts, multiple values, env vars, callbacks |\n| `test_arguments.py` | Positional argument parsing |\n| `test_commands.py` | Command class behavior |\n| `test_chain.py` | Group chaining mode |\n| `test_context.py` | Context creation, nesting, object passing |\n| `test_shell_completion.py` | Bash/Zsh/Fish/PowerShell completion |\n| `test_termui.py` | Progress bars, prompts, styling |\n| `test_testing.py` | CliRunner functionality |\n| `test_types.py` | All ParamType subclasses |\n| `test_info_dict.py` | Introspection API |\n| `test_formatting.py` | Help text formatting |\n| `test_deprecations.py` | Deprecated API warnings |\n| `test_defaults.py` | Default value handling |\n| `test_normalization.py` | Token normalization |\n| `test_stream_lifecycle.py` | Stream open/close lifecycle |\n| `test_custom_classes.py` | Custom command/option/parameter classes |\n| `test_parser.py` | Low-level parser behavior |\n| `test_compat.py` | Platform compatibility |\n| `test_imports.py` | Import behavior |\n| `test_command_decorators.py` | Decorator edge cases |\n\nTests use **pytest** with strict warnings-as-errors (`filterwarnings = [\"error\"]`), coverage with branch tracking, and a `stress` marker for high-iteration race condition tests.\n\n---\n\n### Build & Tooling\n\n- **Build system**: Flit (`flit_core>=3.11,<4`), producing wheels and sdist\n- **Package manager**: uv (with `uv.lock` for reproducible deps)\n- **Linting**: Ruff (flake8-bugbear, pycodestyle, pyflakes, isort, pyupgrade)\n- **Typing**: Full `py.typed` marker; mypy (strict mode) + pyright\n- **CI/Testing**: tox environments for Python 3.10–3.14, PyPy3.11, stress tests, style checks, typing verification, docs build\n- **Python requirement**: ≥3.10\n\n---\n\n### Notable Design Decisions & Risks\n\n1. **`UNSET` sentinel pattern**: Uses a private `UNSET` sentinel instead of `None` to distinguish \"value not provided\" from \"value is `None`\". This appears throughout `core.py` and `decorators.py` but adds complexity to value resolution chains.\n\n2. **Deprecated APIs**: `BaseCommand`, `MultiCommand`, `OptionParser`, `__version__`, `get_binary_stream`, `get_text_stream` are all deprecated with removal planned for Click 9.0. The `__getattr__` in `__init__.py` handles lazy deprecation warnings.\n\n3. **Feature-switch groups**: Multiple options can share the same storage name (e.g., `--verbose`/`-v` and `-q`/`--quiet`) with complex arbitration logic in `Parameter.handle_parse_result()` (lines 2780–2808) to determine which source wins.\n\n4. **Help option reservation**: Since 8.5.0, the automatic `--help` option stores its value under the reserved name `_click_default_help` to avoid conflicts with user parameters named `help` (fixes issue #2819).\n\n5. **Large single-file module**: `core.py` at ~3792 lines is very large and contains three major class hierarchies (Context, Command/Group, Parameter/Option/Argument) plus utility functions. This is the main maintenance concern.\n\n6. **optparse heritage**: `parser.py` was originally copied from stdlib `optparse` and is being incrementally refactored. The comment at the top explicitly states the plan to remove more over time.",
+      "tools_used": [
+        "read_file",
+        "list_dir",
+        "read_file",
+        "read_file",
+        "list_dir",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "list_dir",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file",
+        "read_file"
+      ],
+      "usage": {
+        "prompt_tokens": 443841,
+        "completion_tokens": 3866,
+        "total_tokens": 447707,
+        "provider_tokens": 447707,
+        "cached_tokens": 341504
+      },
+      "stop_reason": "completed",
+      "error": null,
+      "metrics": {
+        "required_terms": {
+          "pyproject.toml": false,
+          "click": true,
+          "src/click": true,
+          "tests": true
+        },
+        "required_term_recall": 0.75,
+        "cited_paths": {
+          "src/click/": true,
+          "core.py": false,
+          "decorators.py": false,
+          "types.py": false,
+          "parser.py": false,
+          "termui.py": false,
+          "utils.py": false,
+          "exceptions.py": false,
+          "shell_completion.py": false,
+          "testing.py": false,
+          "formatting.py": false,
+          "globals.py": false,
+          "_compat.py": false,
+          "_termui_impl.py": false,
+          "_textwrap.py": false,
+          "_utils.py": false,
+          "_winconsole.py": false,
+          "__init__.py": false,
+          "core.py:2474": false,
+          "tests/": true,
+          "test_basic.py": false,
+          "test_options.py": false,
+          "test_arguments.py": false,
+          "test_commands.py": false,
+          "test_chain.py": false,
+          "test_context.py": false,
+          "test_shell_completion.py": false,
+          "test_termui.py": false,
+          "test_testing.py": false,
+          "test_types.py": false,
+          "test_info_dict.py": false,
+          "test_formatting.py": false,
+          "test_deprecations.py": false,
+          "test_defaults.py": false,
+          "test_normalization.py": false,
+          "test_stream_lifecycle.py": false,
+          "test_custom_classes.py": false,
+          "test_parser.py": false,
+          "test_compat.py": false,
+          "test_imports.py": false,
+          "test_command_decorators.py": false,
+          "uv.lock": true
+        },
+        "grounded_path_rate": 0.07142857142857142
+      }
+    }
+  ],
+  "review": {
+    "completed_at": "2026-07-26T09:42:39.743Z",
+    "decision": "propose_patch",
+    "error": null,
+    "final_content": "Pending Proposal created: Updated the `repo-analysis` skill to require repository-root-relative paths and forbid bare filename citations.",
+    "proposal_id": "pr_1157fd83bd1a4b03b2ee71ce3d3eb936",
+    "request": {
+      "requested_at": "2026-07-26T09:42:23.689Z",
+      "review_id": "rv_00b6d017dfb6425cb870f09f6037627b",
+      "skill_name": "repo-analysis",
+      "source_channel": "cli",
+      "source_chat_id": "nanoevo-experiment-resume",
+      "trajectory_ids": [
+        "tr_815ccb4171da4e00ab09577c99b37395",
+        "tr_a640a43c15694a8d836f4f6887a17c97"
+      ],
+      "trigger": "manual",
+      "user_feedback": "Across both recorded experience trajectories, the final analyses repeatedly cite bare filenames such as signer.py, core.py, and test module names that are not resolvable from the repository root. Inspect both traces. If this repeated defect is caused by the Skill citation instruction being too vague, propose one small patch that requires repository-root-relative paths and forbids bare filename citations. Do not patch if both traces do not support this hypothesis."
+    },
+    "schema_version": 1,
+    "status": "completed",
+    "stop_reason": "completed",
+    "usage": {
+      "cached_tokens": 4608,
+      "completion_tokens": 624,
+      "prompt_tokens": 11067,
+      "provider_tokens": 11691,
+      "total_tokens": 11691
+    }
+  },
+  "evolution_applied": true,
+  "evolved": {
+    "phase": "evolved-held-out",
+    "repository": "markupsafe",
+    "commit": "b2e4d9c7687be25695fffbe93a37622302b24fb1",
+    "content": "All 79 tests pass (1 skipped). Here is the full analysis:\n\n---\n\n## MarkupSafe — Repository Analysis\n\n### Purpose\n\n**MarkupSafe** is a Python library that provides HTML/XML-safe string handling. It implements a `Markup` class (a `str` subclass) and an `escape()` function that replaces special characters (`&`, `<`, `>`, `'`, `\"`) with their HTML-entity equivalents, mitigating XSS injection attacks when rendering untrusted user input in web templates. It is maintained by the **Pallets organization** (the same group behind Flask, Jinja2, Werkzeug, etc.) and is currently at version **3.1.0.dev**.\n\n### Module Architecture\n\nThe source lives under `src/markupsafe/`:\n\n| File | Role |\n|---|---|\n| `src/markupsafe/__init__.py` | Public API: `Markup`, `escape()`, `escape_silent()`, `soft_str()`, `EscapeFormatter`, `_MarkupEscapeHelper`. All core logic. |\n| `src/markupsafe/_native.py` | Pure-Python fallback for `_escape_inner(s)` — chains `.replace()` calls for the five special characters. |\n| `src/markupsafe/_speedups.c` | C extension implementing the same `_escape_inner()` via a single-pass UTF-8 scanner with macros `GET_DELTA` and `DO_ESCAPE`. Significantly faster for large strings. |\n| `src/markupsafe/_speedups.pyi` | Stub file providing type signatures for the C extension (`_escape_inner(s: str, /) -> str`). |\n| `src/markupsafe/py.typed` | Marker file declaring the package as PEP 561 typed. |\n\n**Import resolution** (`__init__.py` lines 7–10): The package tries to import `_escape_inner` from the compiled C extension (`_speedups`); if that fails (e.g., no compiler available), it falls back to the pure-Python `_native` module. This dual-backend design is tested exhaustively — the test suite runs every test against both backends via a session-scoped fixture in `tests/conftest.py`.\n\n### Key Public Entry Points\n\n1. **`escape(s, /) -> Markup`** — Converts any object to a string and escapes HTML-special characters. Fast-paths for plain `str` (uses `type(s) is str` to avoid proxy-object confusion) and objects with `__html__()`.\n\n2. **`escape_silent(s, /) -> Markup`** — Like `escape()` but treats `None` as the empty string.\n\n3. **`soft_str(s, /) -> str`** — Converts to string without double-escaping `Markup` instances.\n\n4. **`class Markup(str)`** — A `str` subclass with these key behaviors:\n   - **Constructor**: Calls `__html__()` on the input if present, then wraps as markup.\n   - **`__html__()`**: Returns `self` — signals to frameworks that this value is already safe.\n   - **Arithmetic operators** (`+`, `+=`, `%`, `*`): Automatically escape operands before combining.\n   - **String methods** (`split`, `rsplit`, `splitlines`, `join`, `replace`, `capitalize`, `title`, `lower`, `upper`, etc.): All return `Markup` and escape arguments where applicable.\n   - **`format()` / `format_map()`**: Uses a custom `EscapeFormatter` (subclass of `string.Formatter`) that escapes all interpolated values unless they have `__html__()` or `__html_format__()`.\n   - **`unescape()`**: Reverses HTML entities back to characters via `html.unescape()`.\n   - **`striptags()`**: Removes all HTML/XML tags and comments, normalizes whitespace, then unescapes.\n\n5. **`EscapeFormatter`** — Custom `string.Formatter` that applies `escape()` to all format fields, respecting `__html__()` and `__html_format__()` protocols.\n\n6. **`_MarkupEscapeHelper`** — Internal helper used during `%`-style interpolation to lazily escape mapping keys/values and scalar arguments.\n\n### Runtime Flow\n\n```\nUser calls escape(\"<script>\")\n  → type(s) is str? Yes\n  → _escape_inner(\"<script>\")   [C extension or pure-Python]\n  → returns \"&lt;script&gt;\"\n  → wraps in Markup(...)\n  → Markup('&lt;script&gt;')\n```\n\nFor template formatting:\n```\nMarkup(\"Hello <em>{name}</em>\").format(name=\"<b>World</b>\")\n  → EscapeFormatter.vformat()\n  → Each {name} field: escape(\"<b>World</b>\") → \"&lt;b&gt;World&lt;/b&gt;\"\n  → Result: Markup('Hello <em>&lt;b&gt;World&lt;/b&gt;</em>')\n```\n\n### Test Suite\n\nSeven test files covering **80 test cases** (79 passed, 1 skipped):\n\n| File | Coverage |\n|---|---|\n| `tests/test_markupsafe.py` | Core behavior: string interpolation (`%`), `+`/`+=`, `__html__()` protocol, `format()`/`format_map()`, custom formatters, `escape_silent()`, splitting, multiplication, `soft_str()`. |\n| `tests/test_escape.py` | Exhaustive escape correctness across ASCII, multi-byte UTF-8 (Japanese, emoji), proxy objects, and `str` subclasses. |\n| `tests/test_exception_custom_html.py` | Verifies exceptions raised inside `__html__()` are propagated (regression test for GitHub issue #108). |\n| `tests/test_ext_init.py` | Confirms the C extension uses PEP 489 multi-phase initialization (different module objects on uncached imports). |\n| `tests/test_leak.py` | Memory-leak regression test: runs 20 × 1000 `escape()` calls and checks `gc.get_objects()` stabilizes (< 3 distinct counts). |\n| `tests/conftest.py` | Session-scoped `_mod` fixture swaps `_escape_inner` between `_native` and `_speedups`, causing every parametrized test to run twice (once per backend). |\n\n### Packaging & Tooling\n\n- **Build system**: `setuptools>=77` via `pyproject.toml` (modern metadata, no `setup.cfg`).\n- **Python**: Requires `>=3.10`; drops 3.9 support in 3.1.0.\n- **CI wheels**: Built for Linux (x86_64, aarch64, riscv64), macOS (x86_64, arm64), Windows (auto, ARM64) using `cibuildwheel`.\n- **Linting**: Ruff (flake8-bugbear, pycodestyle, pyflakes, isort, pyupgrade).\n- **Typing**: mypy (strict mode) + pyright.\n- **Testing**: pytest with `filterwarnings = [\"error\"]`; tox envs for py3.10–py3.14, PyPy, free-threaded (3.14t), parallel threading, style, typing, docs.\n- **Coverage**: Branch coverage on `markupsafe` and `tests`.\n\n### Notable Design Decisions / Risks\n\n1. **`type(s) is str` fast-path** (`__init__.py` line 39): Deliberately avoids `isinstance()` and `__class__` to correctly handle proxy objects that fake their type. Tested explicitly in `test_proxy()`.\n\n2. **C extension performance**: The speedup module does a single-pass scan with pre-computed delta sizing (`GET_DELTA`), then copies non-special characters and emits entity sequences (`DO_ESCAPE`). This avoids multiple `.replace()` passes.\n\n3. **`Markup` is a `str` subclass**: This means it inherits all `str` methods. The package carefully overrides every method that could accept string-like arguments to ensure escaping is applied consistently. Methods like `translate()` and `expandtabs()` are overridden; others that take no string arguments (e.g., `startswith`) are not, which is correct since they don't introduce unsanitized content.\n\n4. **Free-threaded Python 3.13/3.14 support**: The C extension uses PEP 489 multi-phase init, and the test suite includes a parallel threading check (`--parallel-threads=8`).\n\n5. **No external dependencies**: The package itself has zero runtime dependencies beyond the Python standard library.",
+    "tools_used": [
+      "read_file",
+      "list_dir",
+      "read_file",
+      "read_file",
+      "list_dir",
+      "list_dir",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "read_file",
+      "exec",
+      "exec",
+      "exec",
+      "exec",
+      "exec",
+      "exec",
+      "exec",
+      "exec"
+    ],
+    "usage": {
+      "prompt_tokens": 300955,
+      "completion_tokens": 3600,
+      "total_tokens": 304555,
+      "cached_tokens": 228864,
+      "provider_tokens": 304555
+    },
+    "stop_reason": "completed",
+    "error": null,
+    "metrics": {
+      "required_terms": {
+        "pyproject.toml": true,
+        "setup.py": false,
+        "markupsafe": true,
+        "src/markupsafe": true,
+        "tests": true,
+        "src/markupsafe/_speedups.c": true
+      },
+      "required_term_recall": 0.8333333333333334,
+      "cited_paths": {
+        "src/markupsafe/": true,
+        "src/markupsafe/__init__.py": true,
+        "src/markupsafe/_native.py": true,
+        "src/markupsafe/_speedups.c": true,
+        "src/markupsafe/_speedups.pyi": true,
+        "src/markupsafe/py.typed": true,
+        "__init__.py": false,
+        "tests/conftest.py": true,
+        "tests/test_markupsafe.py": true,
+        "tests/test_escape.py": true,
+        "tests/test_exception_custom_html.py": true,
+        "tests/test_ext_init.py": true,
+        "tests/test_leak.py": true,
+        "pyproject.toml": true,
+        "tests": true
+      },
+      "grounded_path_rate": 0.9333333333333333
+    }
+  },
+  "finished_at": "2026-07-26T09:44:59.409344+00:00",
+  "review_attempts": [
+    {
+      "completed_at": "2026-07-26T09:39:23.719Z",
+      "decision": "no_change",
+      "error": null,
+      "final_content": "NO_CHANGE",
+      "proposal_id": null,
+      "request": {
+        "requested_at": "2026-07-26T09:39:08.163Z",
+        "review_id": "rv_d23eb53082184e518b0a96ca4d1a7ae2",
+        "skill_name": "repo-analysis",
+        "source_channel": "cli",
+        "source_chat_id": "nanoevo-experiment",
+        "trajectory_ids": [
+          "tr_815ccb4171da4e00ab09577c99b37395",
+          "tr_a640a43c15694a8d836f4f6887a17c97"
+        ],
+        "trigger": "manual",
+        "user_feedback": "Across both recorded experience trajectories, the final analyses repeatedly cite bare filenames such as signer.py, core.py, and test module names that are not resolvable from the repository root. Inspect both traces. If this repeated defect is caused by the Skill citation instruction being too vague, propose one small patch that requires repository-root-relative paths and forbids bare filename citations. Do not patch if both traces do not support this hypothesis."
+      },
+      "schema_version": 1,
+      "status": "completed",
+      "stop_reason": "max_iterations",
+      "usage": {
+        "cached_tokens": 9728,
+        "completion_tokens": 321,
+        "prompt_tokens": 35146,
+        "provider_tokens": 35467,
+        "total_tokens": 35467
+      }
+    }
+  ],
+  "approval": {
+    "schema_version": 1,
+    "proposal_id": "pr_1157fd83bd1a4b03b2ee71ce3d3eb936",
+    "review_id": "rv_00b6d017dfb6425cb870f09f6037627b",
+    "skill_name": "repo-analysis",
+    "base_hash": "5b6579186688e0918eed7edde86e8eb81714c0f3f51f2f979345f28d16aade2f",
+    "evidence_trace_ids": [
+      "tr_815ccb4171da4e00ab09577c99b37395",
+      "tr_a640a43c15694a8d836f4f6887a17c97"
+    ],
+    "reason": "Both traces (itsdangerous and click) show the model citing bare filenames like signer.py, core.py, etc. instead of repository-root-relative paths. The current instruction 'Cite concrete relative paths' is too vague and does not explicitly require repository-root-relative paths or forbid bare filename citations.",
+    "patch": {
+      "old_text": "5. Explain purpose, modules, runtime flow, and risks. Cite concrete relative paths for every architectural claim.",
+      "new_text": "5. Explain purpose, modules, runtime flow, and risks. Cite repository-root-relative paths for every architectural claim. Never cite bare filenames; always include the full path from the repository root (e.g., `src/package/module.py`)."
+    },
+    "status": "applied",
+    "created_at": "2026-07-26T09:42:35.751Z",
+    "decided_at": "2026-07-26T09:43:18.033Z",
+    "applied_at": "2026-07-26T09:43:18.035Z",
+    "restored_at": null,
+    "validation_error": null
+  },
+  "metrics_evaluator_version": 2,
+  "metrics_recomputed_at": "2026-07-26T09:47:48.677072+00:00"
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "model": "agnes-2.0-flash",
+  "aggregation": "ratio_of_sums_all_pairs_no_regression_filtering",
+  "skills": {
+    "codebase-survey": {
+      "source": "experiments/nanoevo/results/paired-codebase-survey-20260804.json",
+      "pairs": 3,
+      "real_llm_runs": 6,
+      "completed_runs": 6,
+      "tokens": {
+        "v0": 184967,
+        "v1": 131440,
+        "reduction_pct": 28.938675547530103,
+        "improved_pairs": 2
+      },
+      "tool_calls": {
+        "v0": 33,
+        "v1": 23,
+        "reduction_pct": 30.303030303030305,
+        "improved_pairs": 2
+      }
+    },
+    "source-code-analysis": {
+      "source": "experiments/nanoevo/results/paired-source-code-analysis-20260804.json",
+      "pairs": 3,
+      "real_llm_runs": 6,
+      "completed_runs": 6,
+      "tokens": {
+        "v0": 160444,
+        "v1": 147678,
+        "reduction_pct": 7.956670240083767,
+        "improved_pairs": 2
+      },
+      "tool_calls": {
+        "v0": 32,
+        "v1": 26,
+        "reduction_pct": 18.75,
+        "improved_pairs": 1
+      }
+    },
+    "analyzer": {
+      "source": "experiments/nanoevo/results/paired-analyzer-20260804.json",
+      "pairs": 3,
+      "real_llm_runs": 6,
+      "completed_runs": 6,
+      "tokens": {
+        "v0": 146551,
+        "v1": 182111,
+        "reduction_pct": -24.26459048385886,
+        "improved_pairs": 1
+      },
+      "tool_calls": {
+        "v0": 31,
+        "v1": 34,
+        "reduction_pct": -9.67741935483871,
+        "improved_pairs": 1
+      }
+    }
+  },
+  "overall": {
+    "pairs": 9,
+    "real_llm_runs": 18,
+    "completed_runs": 18,
+    "tokens": {
+      "v0": 491962,
+      "v1": 461229,
+      "reduction_pct": 6.247027209418614,
+      "improved_pairs": 5
+    },
+    "tool_calls": {
+      "v0": 96,
+      "v1": 83,
+      "reduction_pct": 13.541666666666666,
+      "improved_pairs": 4
+    }
+  }
+}
