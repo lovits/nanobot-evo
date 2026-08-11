@@ -1,6 +1,8 @@
 import Image from "next/image";
 
 export default function Home() {
+  const hostedAppUrl = process.env.NANOEVO_APP_URL?.trim() || "/webui/";
+
   return (
     <main>
       <nav className="nav" aria-label="主导航">
@@ -11,7 +13,7 @@ export default function Home() {
         <div className="nav-links">
           <a href="#how">工作原理</a>
           <a href="#proof">产品界面</a>
-          <a href="/webui/">WebUI 演示</a>
+          <a href={hostedAppUrl} target="_blank" rel="noreferrer">在线 WebUI</a>
           <a href="#safety">安全边界</a>
         </div>
         <a
@@ -35,11 +37,11 @@ export default function Home() {
         <div className="hero-actions">
           <a
             className="button button-primary"
-            href="https://github.com/lovits/nanobot-evo"
+            href={hostedAppUrl}
             target="_blank"
             rel="noreferrer"
           >
-            探索开源项目 <span aria-hidden="true">↗</span>
+            启动 NanoEvo 在线服务 <span aria-hidden="true">↗</span>
           </a>
           <a className="button button-ghost" href="#how">了解演化闭环 <span aria-hidden="true">↓</span></a>
         </div>
@@ -167,10 +169,15 @@ export default function Home() {
           <div><span>03</span><p><b>Versioned control</b>比较历史版本、切换或恢复，所有改变都有来路。</p></div>
         </div>
         <div className="product-demo-action">
-          <a className="button button-primary" href="/webui/">
-            打开完整 WebUI 展示界面 <span aria-hidden="true">↗</span>
+          <a
+            className="button button-primary"
+            href={hostedAppUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            打开在线 NanoEvo WebUI <span aria-hidden="true">↗</span>
           </a>
-          <span>只读演示 · 不连接本地 Agent 或私有数据</span>
+          <span>独立认证 · HTTPS · 持久化会话与演化记录</span>
         </div>
       </section>
 
